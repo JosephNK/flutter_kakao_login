@@ -4,6 +4,9 @@ version: 0.0.1
 author: JosephNK <nkw0608@gmail.com>
 homepage: https://github.com/JosephNK/flutter_kakao_login
 
+environment:
+  sdk: ">=2.0.0-dev.48.0 <3.0.0"
+
 dependencies:
   flutter:
     sdk: flutter
