@@ -1,5 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+//import 'package:flutter/services.dart';
 import 'package:flutter_kakao_login/flutter_kakao_login.dart';
 
 void main() => runApp(new MyApp());
@@ -10,33 +12,45 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  static final FlutterKakaoLogin kakaoSignIn = new FlutterKakaoLogin();
+
+  String _message = 'Log in/out by pressing the buttons below.';
 
   @override
   initState() {
     super.initState();
-    initPlatformState();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = await FlutterKakaoLogin.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
+  Future<Null> _login() async {
+    final KakaoLoginResult result = await kakaoSignIn.logIn();
+    _processResult(result);
+  }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted)
-      return;
+  Future<Null> _logOut() async {
+    final KakaoLoginResult result = await kakaoSignIn.logOut();
+    _processResult(result);
+  }
 
+  void _updateMessage(String message) {
     setState(() {
-      _platformVersion = platformVersion;
+      _message = message;
     });
+  }
+
+  void _processResult(KakaoLoginResult result) {
+    switch (result.status) {
+      case KakaoLoginStatus.loggedIn:
+        _updateMessage('LoggedIn by the user.\n'
+        '- UserID is ${result.userID}\n'
+        '- UserEmail is ${result.userEmail} ');
+        break;
+      case KakaoLoginStatus.loggedOut:
+        _updateMessage('LoggedOut by the user.');
+        break;
+      case KakaoLoginStatus.error:
+        _updateMessage('This is Kakao error message : ${result.errorMessage}');
+        break;
+    }
   }
 
   @override
@@ -44,10 +58,38 @@ class _MyAppState extends State<MyApp> {
     return new MaterialApp(
       home: new Scaffold(
         appBar: new AppBar(
-          title: new Text('Plugin example app'),
+          title: new Text('Kakao Login Plugin app'),
         ),
         body: new Center(
-          child: new Text('Running on: $_platformVersion\n'),
+          child: new Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              new Container(
+                  color: Colors.black12,
+                  padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+                  child: new Text(
+                    _message,
+                    textAlign: TextAlign.left,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 10,
+                    style: new TextStyle(fontWeight: FontWeight.bold)
+                  ),
+              ),
+              new Container(
+                padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+                child: new RaisedButton(
+                  onPressed: _login,
+                  child: new Text('Log in'),
+                ),
+              ),
+              new Container(
+                child: new RaisedButton(
+                  onPressed: _logOut,
+                  child: new Text('Logout'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

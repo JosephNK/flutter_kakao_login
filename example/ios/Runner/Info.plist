@@ -18,8 +18,31 @@
 	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>com.josephnk.flutter1</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>kakao[APP_KEY]</string>
+            </array>
+        </dict>
+    </array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+    <key>KAKAO_APP_KEY</key>
+    <string>[APP_KEY]</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>kakao[APP_KEY]</string>
+        <string>kakaokompassauth</string>
+        <string>storykompassauth</string>
+        <string>kakaolink</string>
+        <string>storylink</string>
+    </array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
