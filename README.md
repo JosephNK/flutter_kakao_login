@@ -8,7 +8,31 @@ A Flutter plugin for using the native Kakao Login SDKs on Android and iOS.
 
 ## Usage
 
-See [lib/main.dart](https://github.com/JosephNK/flutter_kakao_login)  for details.
+See [lib/main.dart](https://github.com/JosephNK/flutter_kakao_login) for details.
+
+```
+1. Depend on it
+Add this to your package's pubspec.yaml file:
+
+dependencies:
+  flutter_kakao_login: "^0.0.1"
+```
+```
+2. Install it
+You can install packages from the command line:
+
+with Flutter:
+
+$ flutter packages get
+
+Alternatively, your editor might support flutter packages get. Check the docs for your editor to learn more.
+```
+```
+3. Import it
+Now in your Dart code, you can use:
+
+    import 'package:flutter_kakao_login/flutter_kakao_login.dart';
+```
 
 ```dart
 FlutterKakaoLogin kakaoSignIn = new FlutterKakaoLogin()
