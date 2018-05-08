@@ -1,2 +1,118 @@
-# flutter_kakao_login
+# Flutter Kakao Login PlugIn
 A Flutter plugin for using the native Kakao Login SDKs on Android and iOS.
+
+## KakaoSDK Version using in plugin
+
+* Android SDK Version  1.11.0
+* iOS SDK Version 1.8.0
+
+## Usage
+
+See [lib/main.dart](https://github.com/JosephNK/flutter_kakao_login)  for details.
+
+```dart
+FlutterKakaoLogin kakaoSignIn = new FlutterKakaoLogin()
+final KakaoLoginResult result = await kakaoSignIn.logIn();
+switch (result.status) {
+    case KakaoLoginStatus.loggedIn:
+        _updateMessage('LoggedIn by the user.\n'
+            '- UserID is ${result.userID}\n'
+            '- UserEmail is ${result.userEmail} ');
+    break;
+    case KakaoLoginStatus.loggedOut:
+        _updateMessage('LoggedOut by the user.');
+    break;
+    case KakaoLoginStatus.error:
+        _updateMessage('This is Kakao error message : ${result.errorMessage}');
+    break;
+}
+```
+
+## Installation
+
+See the [installation by pub](https://github.com/JosephNK/flutter_kakao_login).
+
+### Android
+
+See the [setup instructions detail](https://developers.kakao.com/docs/android/getting-started).
+
+[kakao_strings.xml]
+
+```xml
+<resources>
+    <string name="kakao_app_key">0123456789abcdefghijklmn</string>
+</resources>
+```
+
+[AndroidManifest.xml]
+
+```xml
+<!-- 1 -->
+<uses-permission android:name="android.permission.INTERNET" />
+
+<application>
+    <!-- 2 -->
+    <activity
+        ...
+        android:name=".SampleLoginActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+    <!-- 3 -->
+    <meta-data
+        android:name="com.kakao.sdk.AppKey"
+        android:value="@string/kakao_app_key" />
+    <!-- 4 -->
+    <activity
+        android:name="com.kakao.auth.authorization.authcode.KakaoWebViewActivity"
+        android:launchMode="singleTop"
+        android:windowSoftInputMode="adjustResize">
+
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN"/>
+            <category android:name="android.intent.category.DEFAULT"/>
+        </intent-filter>
+    </activity>
+    ...
+</application>
+```
+
+### iOS
+
+See the [setup instructions detail](https://developers.kakao.com/docs/ios#%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%84%B1).
+
+[info.plst]
+
+```xml
+<key>KAKAO_APP_KEY</key>
+<string>0123456789abcdefghijklmn</string>
+```
+
+```xml
+<key>LSApplicationQueriesSchemes</key>
+<array>
+    <string>kakao0123456789abcdefghijklmn</string>
+    <string>kakaokompassauth</string>
+    <string>storykompassauth</string>
+    <string>kakaolink</string>
+    <string>storylink</string>
+</array>
+```
+
+```xml
+<key>CFBundleURLTypes</key>
+<array>
+    <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLName</key>
+        <string></string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>kakao0123456789abcdefghijklmn</string>
+        </array>
+    </dict>
+</array>
+```
