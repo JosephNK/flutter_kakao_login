@@ -8,7 +8,7 @@ A Flutter plugin for using the native Kakao Login SDKs on Android and iOS.
 
 ## Usage
 
-See [lib/main.dart](https://github.com/JosephNK/flutter_kakao_login) for details.
+See [example/lib/main.dart](https://github.com/JosephNK/flutter_kakao_login/blob/master/example/lib/main.dart) for details.
 
 ```
 1. Depend on it
@@ -54,7 +54,7 @@ switch (result.status) {
 
 ## Installation
 
-See the [installation by pub](https://github.com/JosephNK/flutter_kakao_login).
+See the [installation by pub](https://pub.dartlang.org/packages/flutter_kakao_login).
 
 ### Android
 
