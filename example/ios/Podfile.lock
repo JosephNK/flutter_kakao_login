@@ -21,16 +21,16 @@ PODS:
     - KakaoOpenSDK/KakaoCommon
 
 DEPENDENCIES:
-  - Flutter (from `Pods/.symlinks/flutter/ios-release`)
+  - Flutter (from `Pods/.symlinks/flutter/ios`)
   - flutter_kakao_login (from `Pods/.symlinks/plugins/flutter_kakao_login/ios`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - KakaoOpenSDK
 
 EXTERNAL SOURCES:
   Flutter:
-    :path: Pods/.symlinks/flutter/ios-release
+    :path: Pods/.symlinks/flutter/ios
   flutter_kakao_login:
     :path: Pods/.symlinks/plugins/flutter_kakao_login/ios
 
@@ -41,4 +41,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 13dcf421f4da2e937a57e8ba760ed880beae536f
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.2

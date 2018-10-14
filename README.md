@@ -15,7 +15,7 @@ See [example/lib/main.dart](https://github.com/JosephNK/flutter_kakao_login/blob
 Add this to your package's pubspec.yaml file:
 
 dependencies:
-  flutter_kakao_login: "^0.0.1"
+  flutter_kakao_login: "^0.0.2"
 ```
 ```
 2. Install it
@@ -33,7 +33,7 @@ Now in your Dart code, you can use:
 
     import 'package:flutter_kakao_login/flutter_kakao_login.dart';
 ```
-
+- Login & Logout Example
 ```dart
 FlutterKakaoLogin kakaoSignIn = new FlutterKakaoLogin()
 final KakaoLoginResult result = await kakaoSignIn.logIn();
@@ -49,6 +49,16 @@ switch (result.status) {
     case KakaoLoginStatus.error:
         _updateMessage('This is Kakao error message : ${result.errorMessage}');
     break;
+}
+```
+- Get AccessToken Example
+```dart
+Future<Null> _getAccessToken() async {
+    final KakaoAccessToken accessToken = await (kakaoSignIn.currentAccessToken);
+    if (accessToken != null) {
+      final token = accessToken.token;
+      // To-do Someting ...
+    }
 }
 ```
 
