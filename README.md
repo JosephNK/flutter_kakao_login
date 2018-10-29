@@ -3,7 +3,7 @@ A Flutter plugin for using the native Kakao Login SDKs on Android and iOS.
 
 ## KakaoSDK Version using in plugin
 
-* Android SDK Version  1.11.0
+* Android SDK Version  1.14.0
 * iOS SDK Version 1.8.0
 
 ## Usage
