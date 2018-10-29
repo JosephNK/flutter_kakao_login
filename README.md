@@ -15,7 +15,7 @@ See [example/lib/main.dart](https://github.com/JosephNK/flutter_kakao_login/blob
 Add this to your package's pubspec.yaml file:
 
 dependencies:
-  flutter_kakao_login: "^0.0.2"
+  flutter_kakao_login: "^0.0.3"
 ```
 ```
 2. Install it
