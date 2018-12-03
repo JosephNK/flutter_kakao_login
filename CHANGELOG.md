@@ -13,3 +13,7 @@
 ## [0.0.4]
 
 * add kakao userme api.
+
+## [0.0.5]
+
+* add userme api info for android.

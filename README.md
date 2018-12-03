@@ -67,6 +67,13 @@ Future<Null> _getAccountInfo() async {
     final KakaoLoginResult result = await kakaoSignIn.getUserMe();
     if (result != null && result.status != KakaoLoginStatus.error) {
       final KakaoAccountResult account = result.account;
+      final userID = account.userID;
+      final userEmail = account.userEmail;
+      final userPhoneNumber = account.userPhoneNumber;
+      final userDisplayID = account.userDisplayID;
+      final userNickname = account.userNickname;                       
+      final userProfileImagePath = account.userProfileImagePath;
+      final userThumbnailImagePath = account.userThumbnailImagePath;
       // To-do Someting ...
     }
   }
