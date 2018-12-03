@@ -9,3 +9,7 @@
 ## [0.0.3]
 
 * kakao android sdk 1.14.0 update.
+
+## [0.0.4]
+
+* add kakao userme api.

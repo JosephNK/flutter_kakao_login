@@ -15,7 +15,7 @@ See [example/lib/main.dart](https://github.com/JosephNK/flutter_kakao_login/blob
 Add this to your package's pubspec.yaml file:
 
 dependencies:
-  flutter_kakao_login: "^0.0.3"
+  flutter_kakao_login: "^0.0.4"
 ```
 ```
 2. Install it
@@ -40,8 +40,8 @@ final KakaoLoginResult result = await kakaoSignIn.logIn();
 switch (result.status) {
     case KakaoLoginStatus.loggedIn:
         _updateMessage('LoggedIn by the user.\n'
-            '- UserID is ${result.userID}\n'
-            '- UserEmail is ${result.userEmail} ');
+                       '- UserID is ${result.account.userID}\n'
+                       '- UserEmail is ${result.account.userEmail} ');
     break;
     case KakaoLoginStatus.loggedOut:
         _updateMessage('LoggedOut by the user.');
@@ -60,6 +60,16 @@ Future<Null> _getAccessToken() async {
       // To-do Someting ...
     }
 }
+```
+- Get UserMe Example
+```dart
+Future<Null> _getAccountInfo() async {
+    final KakaoLoginResult result = await kakaoSignIn.getUserMe();
+    if (result != null && result.status != KakaoLoginStatus.error) {
+      final KakaoAccountResult account = result.account;
+      // To-do Someting ...
+    }
+  }
 ```
 
 ## Installation
