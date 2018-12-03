@@ -18,6 +18,15 @@ class FlutterKakaoLogin {
     return new KakaoAccessToken(accessToken);
   }
 
+  // Get UserMe Method
+  Future<KakaoLoginResult> getUserMe() async {
+    final Map<dynamic, dynamic> result = await _channel.invokeMethod('getUserMe');
+
+    return _delayedToResult(
+        new KakaoLoginResult._(result.cast<String, dynamic>())
+    );
+  }
+
   // Login Method
   Future<KakaoLoginResult> logIn() async {
     final Map<dynamic, dynamic> result = await _channel.invokeMethod('logIn');
@@ -42,28 +51,25 @@ class FlutterKakaoLogin {
   }
 }
 
-// Result Status
+// Login Result Status
 enum KakaoLoginStatus {
   loggedIn,
   loggedOut,
   error
 }
 
-// Result Class
+// Login Result Class
 class KakaoLoginResult {
   final KakaoLoginStatus status;
 
-  final String userID;
-
-  final String userEmail;
+  final KakaoAccountResult account; 
 
   final String errorMessage;
 
   KakaoLoginResult._(Map<String, dynamic> map)
       : status = _parseStatus(map['status']),
-        userID = map['userID'],
-        userEmail = map['userEmail'],
-        errorMessage = map['errorMessage'];
+        errorMessage = map['errorMessage'],
+        account = new KakaoAccountResult._(map);
 
   static KakaoLoginStatus _parseStatus(String status) {
     switch (status) {
@@ -77,6 +83,23 @@ class KakaoLoginResult {
 
     throw new StateError('Invalid status: $status');
   }
+}
+
+// Account Class
+class KakaoAccountResult {
+  final String userID;
+
+  final String userEmail;
+
+  final String userPhoneNumber;
+
+  final String userDisplayID;
+  
+  KakaoAccountResult._(Map<String, dynamic> map)
+      : userID = map['userID'],
+        userEmail = map['userEmail'],
+        userPhoneNumber = map['userPhoneNumber'],
+        userDisplayID = map['userDisplayID'];
 }
 
 // AccessToken Class

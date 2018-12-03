@@ -21,8 +21,11 @@ import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.kakao.usermgmt.callback.MeV2ResponseCallback;
 import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.util.exception.KakaoException;
+import com.kakao.util.helper.log.Logger;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -42,6 +45,7 @@ public class FlutterKakaoLoginPlugin implements MethodCallHandler, PluginRegistr
   private static final String METHOD_LOG_IN = "logIn";
   private static final String METHOD_LOG_OUT = "logOut";
   private static final String METHOD_GET_CURRENT_ACCESS_TOKEN = "getCurrentAccessToken";
+  private static final String METHOD_GET_USER_ME = "getUserMe";
 
   private static final String LOG_TAG = "KakaoTalkPlugin";
 
@@ -86,7 +90,9 @@ public class FlutterKakaoLoginPlugin implements MethodCallHandler, PluginRegistr
         String accessToken = tokenInfo.getAccessToken();
         _result.success(accessToken);
         break;
-
+      case METHOD_GET_USER_ME:
+        requestMe(_result);
+        break;
       default:
         result.notImplemented();
         break;
@@ -133,14 +139,67 @@ public class FlutterKakaoLoginPlugin implements MethodCallHandler, PluginRegistr
   }
 
   /**
+   * Get UserMe
+   */
+  public void requestMe(Result result) {
+    final Result _result = result;
+
+    List<String> keys = new ArrayList<>();
+    keys.add("properties.nickname");
+    keys.add("properties.profile_image");
+    keys.add("kakao_account.email");
+
+    UserManagement.getInstance().me(keys, new MeV2ResponseCallback() {
+      @Override
+      public void onFailure(ErrorResult errorResult) {
+        String message = "failed to get user info. msg=" + errorResult;
+        Logger.d(message);
+      }
+
+      @Override
+      public void onSessionClosed(ErrorResult errorResult) {
+        final String errorMessage = errorResult.getErrorMessage();
+        String message = "failed to get user info. msg=" + errorResult;
+        Log.v(LOG_TAG, "kakao : onSessionClosed " + message);
+
+        _result.success(new HashMap<String, String>() {{
+          put("status", "error");
+          put("errorMessage", errorMessage);
+        }});
+      }
+
+      @Override
+      public void onSuccess(MeV2Response response) {
+        final Long userID = response.getId();
+        final String userEmail = response.getKakaoAccount().getEmail();
+        final String userPhoneNumber = response.getKakaoAccount().getPhoneNumber();
+        final String userDisplayID = response.getKakaoAccount().getDisplayId();
+        Log.v(LOG_TAG, "kakao : onSuccess " + "userID: " + userID + " and userEmail: " + userEmail);
+
+        _result.success(new HashMap<String, String>() {{
+          put("status", "loggedIn");
+          put("userID", userID.toString());
+          put("userEmail", userEmail);
+          put("userPhoneNumber", userPhoneNumber);
+          put("userDisplayID", userDisplayID);
+        }});
+      }
+
+      //@Override
+      //public void onNotSignedUp() {
+      //}
+    });
+  }
+
+  /**
    * Class SessonCallback
    */
   private class SessionCallback implements ISessionCallback {
-    private Result result;
+    private Result _result;
 
     public SessionCallback(Result result) {
       Log.v(LOG_TAG, "kakao : SessionCallback create");
-      this.result = result;
+      this._result = result;
     }
 
     private void removeCallback() {
@@ -159,7 +218,7 @@ public class FlutterKakaoLoginPlugin implements MethodCallHandler, PluginRegistr
           String message = "failed to get user info. msg=" + errorResult;
           Log.v(LOG_TAG, "kakao : onSessionClosed " + message);
 
-          result.success(new HashMap<String, String>() {{
+          _result.success(new HashMap<String, String>() {{
             put("status", "error");
             put("errorMessage", errorMessage);
           }});
@@ -173,7 +232,7 @@ public class FlutterKakaoLoginPlugin implements MethodCallHandler, PluginRegistr
           final String userEmail = resultKakao.getKakaoAccount().getEmail();
           Log.v(LOG_TAG, "kakao : onSuccess " + "userID: " + userID + " and userEmail: " + userEmail);
 
-          result.success(new HashMap<String, String>() {{
+          _result.success(new HashMap<String, String>() {{
             put("status", "loggedIn");
             put("userID", userID.toString());
             put("userEmail", userEmail);
@@ -189,7 +248,7 @@ public class FlutterKakaoLoginPlugin implements MethodCallHandler, PluginRegistr
       if (exception != null) {
         final String errorMessage = exception.toString();
         Log.v(LOG_TAG, "kakao : onSessionOpenFailed " + errorMessage);
-        result.success(new HashMap<String, String>() {{
+        _result.success(new HashMap<String, String>() {{
           put("status", "error");
           put("errorMessage", errorMessage);
         }});

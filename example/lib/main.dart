@@ -14,8 +14,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   static final FlutterKakaoLogin kakaoSignIn = new FlutterKakaoLogin();
 
-  String _message = 'Log in/out by pressing the buttons below.';
-  String _accessToken = 'AccessToken is None';
+  String _loginMessage = 'Current Not Logined :(';
+  String _accessToken = '';
+  String _accountInfo = '';
+  bool _isLogined = false;
+
+  List<Map<String, String>> _litems = [ { "key": "login", "title": "Login", "subtitle": ""},
+                                        { "key": "logout", "title": "Logout", "subtitle": ""},
+                                        { "key": "account", "title": "Get AccountInfo", "subtitle": ""},
+                                        { "key": "accessToken", "title": "Get AccessToken", "subtitle": ""} ];
 
   @override
   initState() {
@@ -24,12 +31,25 @@ class _MyAppState extends State<MyApp> {
 
   Future<Null> _login() async {
     final KakaoLoginResult result = await kakaoSignIn.logIn();
-    _processResult(result);
+    _processLoginResult(result);
+    //if (result.account != null && result.status != KakaoLoginStatus.error) {
+    //  final KakaoAccountResult account = result.account;
+    //  _processAccountResult(account);
+    //}
   }
 
   Future<Null> _logOut() async {
     final KakaoLoginResult result = await kakaoSignIn.logOut();
-    _processResult(result);
+    _processLoginResult(result);
+    _processAccountResult(null);
+  }
+
+  Future<Null> _getAccountInfo() async {
+    final KakaoLoginResult result = await kakaoSignIn.getUserMe();
+    if (result != null && result.status != KakaoLoginStatus.error) {
+      final KakaoAccountResult account = result.account;
+      _processAccountResult(account);
+    }
   }
 
   Future<Null> _getAccessToken() async {
@@ -38,14 +58,24 @@ class _MyAppState extends State<MyApp> {
       final token = accessToken.token;
       _updateAccessToken('AccessToken is \n' + token);
     } else {
-      _updateAccessToken('AccessToken is None');
+      _updateAccessToken('');
     }
   }
 
-  void _updateMessage(String message) {
+  void _updateLoginMessage(String message) {
     setState(() {
-      _message = message;
+      _loginMessage = message;
     });
+  }
+
+  void _updateStateLogin(bool logined) {
+    setState(() {
+      _isLogined = logined;      
+    });
+    if (!logined) {
+      _updateAccessToken('');
+      _updateAccountMessage('');
+    }
   }
 
   void _updateAccessToken(String accessToken) {
@@ -54,26 +84,70 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _processResult(KakaoLoginResult result) {
+  void _updateAccountMessage(String message) {
+    setState(() {
+      _accountInfo = message;
+    });
+  }
+
+  void _processLoginResult(KakaoLoginResult result) {
     switch (result.status) {
       case KakaoLoginStatus.loggedIn:
-        _updateMessage('LoggedIn by the user.\n'
-        '- UserID is ${result.userID}\n'
-        '- UserEmail is ${result.userEmail} ');
+        _updateLoginMessage('LoggedIn by the user.');
 
-        _getAccessToken();
+        _updateStateLogin(true);
         break;
       case KakaoLoginStatus.loggedOut:
-        _updateMessage('LoggedOut by the user.');
+        _updateLoginMessage('LoggedOut by the user.');
 
-        _getAccessToken();
+        _updateStateLogin(false);
         break;
       case KakaoLoginStatus.error:
-        _updateMessage('This is Kakao error message : ${result.errorMessage}');
+        _updateLoginMessage('This is Kakao error message : ${result.errorMessage}');
 
-        _getAccessToken();
+        _updateStateLogin(false);
         break;
     }
+  }
+
+  void _processAccountResult(KakaoAccountResult account) {
+    if (account == null) {
+      _updateAccountMessage('');
+    } else {
+      final userID = (account.userID == null) ? 'None' : account.userID;
+      final userEmail = (account.userEmail == null) ? 'None' : account.userEmail;
+      final userPhoneNumber = (account.userPhoneNumber == null) ? 'None' : account.userPhoneNumber;
+      final userDisplayID = (account.userDisplayID == null) ? 'None' : account.userDisplayID;
+
+      _updateAccountMessage('- UserID is ${userID}\n'
+                            '- UserEmail is ${userEmail}\n'
+                            '- UserPhoneNumber is ${userPhoneNumber}\n'
+                            '- UserDisplayID is ${userDisplayID}');
+    }
+  }
+
+  void _showAlert(BuildContext context, String value) {
+    if (value.isEmpty) return;
+  
+    showDialog(
+      context: context, 
+      builder: (BuildContext context) { 
+        return new AlertDialog(
+          content: new Text(
+            value,
+            style: new TextStyle(fontWeight: FontWeight.bold)
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('OK'),
+              onPressed: (){
+                Navigator.of(context).pop(true);
+              },
+            )
+          ],
+        );
+      }
+    );
   }
 
   @override
@@ -83,56 +157,131 @@ class _MyAppState extends State<MyApp> {
         appBar: new AppBar(
           title: new Text('Kakao Login Plugin app'),
         ),
-        body: new Center(
+        body: new SafeArea(
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              new Container(
-                  color: Colors.black12,
-                  padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
-                  child: new Text(
-                    _message,
-                    textAlign: TextAlign.left,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 10,
-                    style: new TextStyle(fontWeight: FontWeight.bold)
-                  ),
+              new Padding(
+                //padding: const EdgeInsets.only(top: 100.0),
+                padding: EdgeInsets.all(0.0),
+                child: IntrinsicHeight(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch, 
+                    children: [
+                    Expanded(
+                      child: Column(children: [
+                        new Container(
+                          height: 45.0, 
+                          decoration: new BoxDecoration(
+                            color: Colors.white,
+                            border: new Border(
+                              bottom: new BorderSide(color: Colors.white, width: 0.0)
+                            )
+                          ),
+                          child: new Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              new Text(
+                                "Kakao Login Result",
+                                style: new TextStyle(fontWeight: FontWeight.bold)
+                              )
+                            ],
+                          ),
+                        ),
+                        new Container(
+                          height: 180.0, 
+                          decoration: new BoxDecoration(
+                            color: Colors.white,
+                            border: new Border(
+                              bottom: new BorderSide(color: Colors.grey, width: 1.0)
+                            )
+                          ),
+                          child: new Center(
+                            child: new Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                new Container(
+                                  padding: const EdgeInsets.only(top: 5.0, bottom: 5.0, left: 8.0, right: 8.0),
+                                  child: new Text(
+                                    _loginMessage,
+                                    textAlign: TextAlign.left,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 10,
+                                  ),
+                                ),
+                                new Container(
+                                  padding: const EdgeInsets.only(top: 5.0, bottom: 5.0, left: 8.0, right: 8.0),
+                                  child: new Text(
+                                    _accountInfo,
+                                    textAlign: TextAlign.left,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 10,
+                                  ),
+                                ),
+                                new Container(
+                                  padding: const EdgeInsets.only(top: 5.0, bottom: 5.0, left: 25.0, right: 25.0),
+                                  child: new Text(
+                                    _accessToken,
+                                    textAlign: TextAlign.left,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ]),
+                    ),
+                  ]),
+                )
               ),
-              new Container(
-                  //color: Colors.black12,
-                  padding: const EdgeInsets.only(top: 15.0, bottom: 15.0, left: 30.0, right: 30.0),
-                  child: new Text(
-                    _accessToken,
-                    textAlign: TextAlign.left,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 10,
-                    style: new TextStyle(fontWeight: FontWeight.bold)
-                  ),
-              ),
-              new Container(
-                padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
-                child: new RaisedButton(
-                  onPressed: _login,
-                  child: new Text('Log in'),
-                ),
-              ),
-              new Container(
-                padding: const EdgeInsets.only(top: 0.0, bottom: 15.0),
-                child: new RaisedButton(
-                  onPressed: _logOut,
-                  child: new Text('Logout'),
-                ),
-              ),
-              new Container(
-                child: new RaisedButton(
-                  onPressed: _getAccessToken,
-                  child: new Text('Get AccessToken'),
+              new Expanded(
+                child: new ListView.builder (
+                    itemCount: _litems.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        title: new Text(_litems[index]['title']),
+                        subtitle: new Text(_litems[index]['subtitle']),
+                        onTap: () {
+                          final key = _litems[index]['key'];
+                          switch (key) {
+                            case "login":
+                              if (!_isLogined) {
+                                _login();
+                              }
+                            break;
+                            case "logout":
+                              if (_isLogined) {
+                                _logOut();
+                              }
+                            break;
+                            case "account":
+                              if (!_isLogined) {
+                                _showAlert(context, 'Login is required.');
+                              } else {
+                                _getAccountInfo();
+                              }
+                            break;
+                            case "accessToken":
+                              if (!_isLogined) {
+                                _showAlert(context, 'Login is required.');
+                              } else {
+                                _getAccessToken();
+                              }
+                            break;
+                          }
+                        },
+                      );
+                  },
                 ),
               ),
             ],
-          ),
-        ),
-      ),
+          )
+        )
+      )
     );
   }
 }
