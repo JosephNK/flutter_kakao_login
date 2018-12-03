@@ -94,12 +94,21 @@ class KakaoAccountResult {
   final String userPhoneNumber;
 
   final String userDisplayID;
+
+  final String userNickname;            // support only android
+
+  final String userProfileImagePath;    // support only android
+
+  final String userThumbnailImagePath;  // support only android
   
   KakaoAccountResult._(Map<String, dynamic> map)
       : userID = map['userID'],
         userEmail = map['userEmail'],
         userPhoneNumber = map['userPhoneNumber'],
-        userDisplayID = map['userDisplayID'];
+        userDisplayID = map['userDisplayID'],
+        userNickname = map['userNickname'],
+        userProfileImagePath = map['userProfileImagePath'],
+        userThumbnailImagePath = map['userThumbnailImagePath'];
 }
 
 // AccessToken Class

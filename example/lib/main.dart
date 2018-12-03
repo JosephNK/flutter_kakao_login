@@ -118,11 +118,17 @@ class _MyAppState extends State<MyApp> {
       final userEmail = (account.userEmail == null) ? 'None' : account.userEmail;
       final userPhoneNumber = (account.userPhoneNumber == null) ? 'None' : account.userPhoneNumber;
       final userDisplayID = (account.userDisplayID == null) ? 'None' : account.userDisplayID;
+      final userNickname = (account.userNickname == null) ? 'None' : account.userNickname;
+      final userProfileImagePath = (account.userProfileImagePath == null) ? 'None' : account.userProfileImagePath;
+      final userThumbnailImagePath = (account.userThumbnailImagePath == null) ? 'None' : account.userThumbnailImagePath;
 
-      _updateAccountMessage('- UserID is ${userID}\n'
-                            '- UserEmail is ${userEmail}\n'
-                            '- UserPhoneNumber is ${userPhoneNumber}\n'
-                            '- UserDisplayID is ${userDisplayID}');
+      _updateAccountMessage('- ID is ${userID}\n'
+                            '- Email is ${userEmail}\n'
+                            '- PhoneNumber is ${userPhoneNumber}\n'
+                            '- DisplayID is ${userDisplayID}\n'
+                            '- Nickname is ${userNickname}\n'
+                            '- ProfileImagePath is ${userProfileImagePath}\n'
+                            '- ThumbnailImagePath is ${userThumbnailImagePath}');
     }
   }
 
@@ -191,7 +197,7 @@ class _MyAppState extends State<MyApp> {
                           ),
                         ),
                         new Container(
-                          height: 180.0, 
+                          height: 250.0, 
                           decoration: new BoxDecoration(
                             color: Colors.white,
                             border: new Border(

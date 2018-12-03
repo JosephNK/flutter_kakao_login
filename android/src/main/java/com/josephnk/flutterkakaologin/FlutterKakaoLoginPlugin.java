@@ -171,14 +171,21 @@ public class FlutterKakaoLoginPlugin implements MethodCallHandler, PluginRegistr
       @Override
       public void onSuccess(MeV2Response response) {
         final Long userID = response.getId();
+        final String userNickname = response.getNickname();
+        final String userProfileImagePath = response.getProfileImagePath();
+        final String userThumbnailImagePath = response.getThumbnailImagePath();
         final String userEmail = response.getKakaoAccount().getEmail();
         final String userPhoneNumber = response.getKakaoAccount().getPhoneNumber();
         final String userDisplayID = response.getKakaoAccount().getDisplayId();
+
         Log.v(LOG_TAG, "kakao : onSuccess " + "userID: " + userID + " and userEmail: " + userEmail);
 
         _result.success(new HashMap<String, String>() {{
           put("status", "loggedIn");
           put("userID", userID.toString());
+          put("userNickname", userNickname);
+          put("userProfileImagePath", userProfileImagePath);
+          put("userThumbnailImagePath", userThumbnailImagePath);
           put("userEmail", userEmail);
           put("userPhoneNumber", userPhoneNumber);
           put("userDisplayID", userDisplayID);
