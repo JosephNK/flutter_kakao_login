@@ -1,23 +1,23 @@
 PODS:
   - Flutter (1.0.0)
-  - flutter_kakao_login (0.0.1):
+  - flutter_kakao_login (0.0.6):
     - Flutter
-    - KakaoOpenSDK (~> 1.8.0)
-  - KakaoOpenSDK (1.8.0):
-    - KakaoOpenSDK/KakaoCommon (= 1.8.0)
-    - KakaoOpenSDK/KakaoLink (= 1.8.0)
-    - KakaoOpenSDK/KakaoMessageTemplate (= 1.8.0)
-    - KakaoOpenSDK/KakaoNavi (= 1.8.0)
-    - KakaoOpenSDK/KakaoOpenSDK (= 1.8.0)
-    - KakaoOpenSDK/KakaoS2 (= 1.8.0)
-  - KakaoOpenSDK/KakaoCommon (1.8.0)
-  - KakaoOpenSDK/KakaoLink (1.8.0):
+    - KakaoOpenSDK (~> 1.11.1)
+  - KakaoOpenSDK (1.11.1):
+    - KakaoOpenSDK/KakaoCommon (= 1.11.1)
+    - KakaoOpenSDK/KakaoLink (= 1.11.1)
+    - KakaoOpenSDK/KakaoMessageTemplate (= 1.11.1)
+    - KakaoOpenSDK/KakaoNavi (= 1.11.1)
+    - KakaoOpenSDK/KakaoOpenSDK (= 1.11.1)
+    - KakaoOpenSDK/KakaoS2 (= 1.11.1)
+  - KakaoOpenSDK/KakaoCommon (1.11.1)
+  - KakaoOpenSDK/KakaoLink (1.11.1):
     - KakaoOpenSDK/KakaoCommon
-  - KakaoOpenSDK/KakaoMessageTemplate (1.8.0)
-  - KakaoOpenSDK/KakaoNavi (1.8.0):
+  - KakaoOpenSDK/KakaoMessageTemplate (1.11.1)
+  - KakaoOpenSDK/KakaoNavi (1.11.1):
     - KakaoOpenSDK/KakaoCommon
-  - KakaoOpenSDK/KakaoOpenSDK (1.8.0)
-  - KakaoOpenSDK/KakaoS2 (1.8.0):
+  - KakaoOpenSDK/KakaoOpenSDK (1.11.1)
+  - KakaoOpenSDK/KakaoS2 (1.11.1):
     - KakaoOpenSDK/KakaoCommon
 
 DEPENDENCIES:
@@ -35,10 +35,10 @@ EXTERNAL SOURCES:
     :path: Pods/.symlinks/plugins/flutter_kakao_login/ios
 
 SPEC CHECKSUMS:
-  Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
-  flutter_kakao_login: 296e9449c7fe1cd56f11d5f83cd1ba838c03dd5c
-  KakaoOpenSDK: 85dd9e9e4c33d71e5f09e32ca16a114177b8bf44
+  Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+  flutter_kakao_login: 6309839ba1280cd80583ac0c050c06257b3848ef
+  KakaoOpenSDK: eb8eae72c3943fa51ac1420e7a1268730ee99d61
 
 PODFILE CHECKSUM: 13dcf421f4da2e937a57e8ba760ed880beae536f
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.6.0

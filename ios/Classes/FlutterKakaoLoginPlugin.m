@@ -62,33 +62,49 @@
             }
         }];
     } else if ([@"getUserMe" isEqualToString:call.method]) {
-        [KOSessionTask userMeTaskWithCompletion:^(NSError *error, KOUserMe *me) {
-            if (error) {
-                result(@{ @"status" : @"error",
-                          @"errorMessage" : [error description] });
-            } else {
-                NSString *userID = me.ID;
-                NSString *userEmail = me.account.email;
-                NSString *userPhoneNumber = me.account.phoneNumber;
-                NSString *userDisplayID = me.account.displayID;
-                
-                NSMutableDictionary *info = [NSMutableDictionary new];
-                info[@"status"] = @"loggedIn";
-                if (userID) {
-                    info[@"userID"] = userID;
-                }
-                if (userEmail) {
-                    info[@"userEmail"] = userEmail;
-                }
-                if (userPhoneNumber) {
-                    info[@"userPhoneNumber"] = userPhoneNumber;
-                }
-                if (userDisplayID) {
-                    info[@"userDisplayID"] = userDisplayID;
-                }
-                result(info);
-            }
-        }];
+		[KOSessionTask userMeTaskWithPropertyKeys:@[@"kakao_account.email"
+													, @"properties.nickname"
+													, @"properties.profile_image"
+													, @"properties.thumbnail_image"]
+									   completion:^(NSError *error, KOUserMe *me) {
+										   if (error) {
+											   result(@{ @"status" : @"error",
+														 @"errorMessage" : [error description] });
+										   } else {
+											   NSString *userID = me.ID;
+											   NSString *userEmail = me.account.email;
+											   NSString *userNickname = me.properties[@"nickname"];
+											   NSString *userProfileImagePath = me.properties[@"profile_image"];
+											   NSString *userThumbnailImagePath = me.properties[@"thumbnail_image"];
+											   NSString *userPhoneNumber = me.account.phoneNumber;
+											   NSString *userDisplayID = me.account.displayID;
+											   
+											   NSMutableDictionary *info = [NSMutableDictionary new];
+											   info[@"status"] = @"loggedIn";
+											   if (userID) {
+												   info[@"userID"] = userID;
+											   }
+											   if (userNickname) {
+												   info[@"userNickname"] = userNickname;
+											   }
+											   if (userProfileImagePath) {
+												   info[@"userProfileImagePath"] = userProfileImagePath;
+											   }
+											   if (userThumbnailImagePath) {
+												   info[@"userThumbnailImagePath"] = userThumbnailImagePath;
+											   }
+											   if (userEmail) {
+												   info[@"userEmail"] = userEmail;
+											   }
+											   if (userPhoneNumber) {
+												   info[@"userPhoneNumber"] = userPhoneNumber;
+											   }
+											   if (userDisplayID) {
+												   info[@"userDisplayID"] = userDisplayID;
+											   }
+											   result(info);
+										   }
+									   }];
     } else if ([@"getCurrentAccessToken" isEqualToString:call.method]) {
         NSString *accessToken = [KOSession sharedSession].token.accessToken;
         result(accessToken);

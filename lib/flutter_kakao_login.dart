@@ -95,11 +95,11 @@ class KakaoAccountResult {
 
   final String userDisplayID;
 
-  final String userNickname;            // support only android
+  final String userNickname;
 
-  final String userProfileImagePath;    // support only android
+  final String userProfileImagePath;
 
-  final String userThumbnailImagePath;  // support only android
+  final String userThumbnailImagePath;
   
   KakaoAccountResult._(Map<String, dynamic> map)
       : userID = map['userID'],

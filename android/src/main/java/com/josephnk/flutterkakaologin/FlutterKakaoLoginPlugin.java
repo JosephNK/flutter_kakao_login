@@ -147,6 +147,7 @@ public class FlutterKakaoLoginPlugin implements MethodCallHandler, PluginRegistr
     List<String> keys = new ArrayList<>();
     keys.add("properties.nickname");
     keys.add("properties.profile_image");
+    keys.add("properties.thumbnail_image");
     keys.add("kakao_account.email");
 
     UserManagement.getInstance().me(keys, new MeV2ResponseCallback() {
