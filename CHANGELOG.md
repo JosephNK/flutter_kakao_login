@@ -23,3 +23,7 @@
 * modify kakao userme api.
 * kakao android sdk 1.16.0 update.
 * kakao ios sdk 1.11.1 update.
+
+## [0.0.7]
+
+* add ios static_framework true in podspec.

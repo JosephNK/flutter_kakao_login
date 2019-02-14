@@ -3,7 +3,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_kakao_login'
-  s.version          = '0.0.6'
+  s.version          = '0.0.7'
   s.summary          = 'A new flutter plugin project.'
   s.description      = <<-DESC
 A new flutter plugin project.
@@ -16,7 +16,7 @@ A new flutter plugin project.
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
   s.dependency 'KakaoOpenSDK', '~> 1.11.1'
-
+  s.static_framework = true
   s.ios.deployment_target = '9.0'
 end
 
