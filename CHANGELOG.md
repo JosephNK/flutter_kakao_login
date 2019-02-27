@@ -27,3 +27,7 @@
 ## [0.0.7]
 
 * add ios static_framework true in podspec.
+
+## [0.0.8]
+
+* update support AndroidX by [amond](https://github.com/amondnet)
