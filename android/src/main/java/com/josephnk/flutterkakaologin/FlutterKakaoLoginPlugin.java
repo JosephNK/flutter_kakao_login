@@ -172,12 +172,12 @@ public class FlutterKakaoLoginPlugin implements MethodCallHandler, PluginRegistr
       @Override
       public void onSuccess(MeV2Response response) {
         final Long userID = response.getId();
-        final String userNickname = response.getNickname();
-        final String userProfileImagePath = response.getProfileImagePath();
-        final String userThumbnailImagePath = response.getThumbnailImagePath();
-        final String userEmail = response.getKakaoAccount().getEmail();
-        final String userPhoneNumber = response.getKakaoAccount().getPhoneNumber();
-        final String userDisplayID = response.getKakaoAccount().getDisplayId();
+        final String userNickname = (response.getNickname() == null) ? "" : response.getNickname();
+        final String userProfileImagePath = (response.getProfileImagePath() == null) ? "" : response.getProfileImagePath();
+        final String userThumbnailImagePath = (response.getThumbnailImagePath() == null) ? "" : response.getThumbnailImagePath();
+        final String userEmail = (response.getKakaoAccount().getEmail() == null) ? "" : response.getKakaoAccount().getEmail();
+        final String userPhoneNumber = (response.getKakaoAccount().getPhoneNumber() == null) ? "" : response.getKakaoAccount().getPhoneNumber();
+        final String userDisplayID = (response.getKakaoAccount().getDisplayId() == null) ? "" : response.getKakaoAccount().getDisplayId();
 
         Log.v(LOG_TAG, "kakao : onSuccess " + "userID: " + userID + " and userEmail: " + userEmail);
 
@@ -237,7 +237,8 @@ public class FlutterKakaoLoginPlugin implements MethodCallHandler, PluginRegistr
           removeCallback();
 
           final Long userID = resultKakao.getId();
-          final String userEmail = resultKakao.getKakaoAccount().getEmail();
+          final String userEmail = (resultKakao.getKakaoAccount().getEmail() == null) ? "" : resultKakao.getKakaoAccount().getEmail();
+
           Log.v(LOG_TAG, "kakao : onSuccess " + "userID: " + userID + " and userEmail: " + userEmail);
 
           _result.success(new HashMap<String, String>() {{
