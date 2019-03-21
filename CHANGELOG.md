@@ -35,3 +35,7 @@
 ## [0.1.0]
 
 * fixed getEmail null exception for android.
+
+## [0.1.1]
+
+* update document.
