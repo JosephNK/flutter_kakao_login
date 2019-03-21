@@ -31,3 +31,7 @@
 ## [0.0.8]
 
 * update support AndroidX by [amond](https://github.com/amondnet)
+
+## [0.1.0]
+
+* fixed getEmail null exception for android.
