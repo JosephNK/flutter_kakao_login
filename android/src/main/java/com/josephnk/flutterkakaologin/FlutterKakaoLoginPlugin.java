@@ -20,6 +20,7 @@ import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.kakao.usermgmt.callback.MeV2ResponseCallback;
 import com.kakao.usermgmt.response.MeV2Response;
+import com.kakao.usermgmt.response.model.UserAccount;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 
@@ -171,13 +172,15 @@ public class FlutterKakaoLoginPlugin implements MethodCallHandler, PluginRegistr
 
       @Override
       public void onSuccess(MeV2Response response) {
+        final UserAccount userAccount = response.getKakaoAccount(); // https://devtalk.kakao.com/t/topic/70955/2
+
         final Long userID = response.getId();
         final String userNickname = (response.getNickname() == null) ? "" : response.getNickname();
         final String userProfileImagePath = (response.getProfileImagePath() == null) ? "" : response.getProfileImagePath();
         final String userThumbnailImagePath = (response.getThumbnailImagePath() == null) ? "" : response.getThumbnailImagePath();
-        final String userEmail = (response.getKakaoAccount().getEmail() == null) ? "" : response.getKakaoAccount().getEmail();
-        final String userPhoneNumber = (response.getKakaoAccount().getPhoneNumber() == null) ? "" : response.getKakaoAccount().getPhoneNumber();
-        final String userDisplayID = (response.getKakaoAccount().getDisplayId() == null) ? "" : response.getKakaoAccount().getDisplayId();
+        final String userEmail = (userAccount == null) ? "" : (userAccount.getEmail() == null) ? "" : userAccount.getEmail();
+        final String userPhoneNumber =  (userAccount == null) ? "" : (userAccount.getPhoneNumber() == null) ? "" : userAccount.getPhoneNumber();
+        final String userDisplayID =  (userAccount == null) ? "" : (userAccount.getDisplayId() == null) ? "" : userAccount.getDisplayId();
 
         Log.v(LOG_TAG, "kakao : onSuccess " + "userID: " + userID + " and userEmail: " + userEmail);
 
@@ -236,8 +239,10 @@ public class FlutterKakaoLoginPlugin implements MethodCallHandler, PluginRegistr
         public void onSuccess(MeV2Response resultKakao) {
           removeCallback();
 
+          final UserAccount userAccount = resultKakao.getKakaoAccount(); // https://devtalk.kakao.com/t/topic/70955/2
+
           final Long userID = resultKakao.getId();
-          final String userEmail = (resultKakao.getKakaoAccount().getEmail() == null) ? "" : resultKakao.getKakaoAccount().getEmail();
+          final String userEmail = (userAccount == null) ? "" : (userAccount.getEmail() == null) ? "" : userAccount.getEmail();
 
           Log.v(LOG_TAG, "kakao : onSuccess " + "userID: " + userID + " and userEmail: " + userEmail);
 
