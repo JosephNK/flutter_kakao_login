@@ -39,3 +39,7 @@
 ## [0.1.1]
 
 * update document.
+
+## [0.2.0]
+
+* fixed getKakaoAccount() null exception for android.
