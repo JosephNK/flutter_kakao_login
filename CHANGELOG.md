@@ -43,3 +43,7 @@
 ## [0.2.0]
 
 * fixed getKakaoAccount() null exception for android.
+
+## [0.3.0]
+
+* fixed PluginRegistry ActivityResultListener exception for android. [GwonHyeok](https://github.com/GwonHyeok)
