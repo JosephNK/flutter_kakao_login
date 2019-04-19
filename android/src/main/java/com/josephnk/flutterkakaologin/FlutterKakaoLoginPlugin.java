@@ -107,7 +107,7 @@ public class FlutterKakaoLoginPlugin implements MethodCallHandler, PluginRegistr
   public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
     Log.v(LOG_TAG, "onActivityResult requestCode: " + requestCode + " resultCode: " + resultCode + " data: " + data);
     if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)){
-      return false;
+      return true;
     }
     return false;
   }
