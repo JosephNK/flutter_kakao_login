@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.kakao.auth.ApiErrorCode;
 import com.kakao.auth.ApprovalType;
 import com.kakao.auth.AuthType;
 import com.kakao.auth.IApplicationConfig;
@@ -19,6 +20,7 @@ import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.kakao.usermgmt.callback.MeV2ResponseCallback;
+import com.kakao.usermgmt.callback.UnLinkResponseCallback;
 import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.usermgmt.response.model.UserAccount;
 import com.kakao.util.exception.KakaoException;
@@ -47,6 +49,7 @@ public class FlutterKakaoLoginPlugin implements MethodCallHandler, PluginRegistr
   private static final String METHOD_LOG_OUT = "logOut";
   private static final String METHOD_GET_CURRENT_ACCESS_TOKEN = "getCurrentAccessToken";
   private static final String METHOD_GET_USER_ME = "getUserMe";
+  private static final String METHOD_UNLINK = "unlink";
 
   private static final String LOG_TAG = "KakaoTalkPlugin";
 
@@ -94,6 +97,8 @@ public class FlutterKakaoLoginPlugin implements MethodCallHandler, PluginRegistr
       case METHOD_GET_USER_ME:
         requestMe(_result);
         break;
+      case METHOD_UNLINK:
+        unlink(_result);
       default:
         result.notImplemented();
         break;
@@ -199,6 +204,53 @@ public class FlutterKakaoLoginPlugin implements MethodCallHandler, PluginRegistr
       //@Override
       //public void onNotSignedUp() {
       //}
+    });
+  }
+
+  /**
+   * Get UserMe
+   */
+  private void unlink(Result result) {
+    final Result _result = result;
+
+    UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
+      @Override
+      public void onFailure(ErrorResult errorResult) {
+        Log.e(LOG_TAG, "kakao : UnLinkResponseCallback.onFailure" + errorResult);
+        _result.error(String.valueOf(errorResult.getErrorCode()), errorResult.getErrorMessage(), errorResult );
+      }
+      /**
+       * 세션이 닫혔을때 불리는 callback
+       * @param errorResult errorResult
+       */
+      @Override
+      public void onSessionClosed(ErrorResult errorResult) {
+        Log.e(LOG_TAG, "kakao : UnLinkResponseCallback.onSessionClosed" + errorResult);
+        _result.error(String.valueOf(errorResult.getErrorCode()), errorResult.getErrorMessage(), errorResult );
+      }
+
+      /**
+       * 세션 오픈은 성공했으나 사용자 정보 요청 결과 사용자 가입이 안된 상태로
+       * 일반적으로 가입창으로 이동한다.
+       * 자동 가입 앱이 아닌 경우에만 호출된다.
+       */
+      @Override
+      public void onNotSignedUp() {
+        Log.e(LOG_TAG, "kakao : UnLinkResponseCallback.onNotSignedUp");
+        _result.error(String.valueOf(ApiErrorCode.NOT_REGISTERED_USER_CODE), "" ,null );
+      }
+
+      @Override
+      public void onSuccess(final Long userId) {
+
+        Log.v(LOG_TAG, "kakao : UnLinkResponseCallback.onSuccess " + "userId: " + userId);
+
+        _result.success(new HashMap<String, String>() {{
+          put("status", "unlinked");
+          put("userID", userId.toString());
+        }});
+      }
+
     });
   }
 
