@@ -108,10 +108,27 @@
     } else if ([@"getCurrentAccessToken" isEqualToString:call.method]) {
         NSString *accessToken = [KOSession sharedSession].token.accessToken;
         result(accessToken);
+    } else if ([@"unlink" isEqualToString:call.method]) {
+        [KOSessionTask unlinkTaskWithCompletionHandler:^(BOOL success, NSError *error) {
+            if (success) {
+                // success
+                result(@{ @"status" : @"unlikned" });
+            } else {
+                if (error) {
+                    result([FlutterError errorWithCode:[NSString stringWithFormat:@"Error %ld", error.code]
+                                               message:error.domain
+                                               details:error.localizedDescription]);
+                } else {
+                    result(nil);
+                }
+            }
+        }];
     } else {
         result(FlutterMethodNotImplemented);
     }
 }
+    
+
 
 #pragma mark -
 
