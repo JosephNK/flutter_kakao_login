@@ -64,7 +64,7 @@ class FlutterKakaoLogin {
 }
 
 // Login Result Status
-enum KakaoLoginStatus { loggedIn, loggedOut, error, unlinked }
+enum KakaoLoginStatus { loggedIn, loggedOut, error }
 
 // Login Result Class
 class KakaoLoginResult {
@@ -85,8 +85,6 @@ class KakaoLoginResult {
         return KakaoLoginStatus.loggedIn;
       case 'loggedOut':
         return KakaoLoginStatus.loggedOut;
-      case 'unlinked':
-        return KakaoLoginStatus.unlinked;
       case 'error':
         return KakaoLoginStatus.error;
     }
