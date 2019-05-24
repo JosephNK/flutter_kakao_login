@@ -46,16 +46,15 @@ class FlutterKakaoLogin {
   }
 
   // Unlink Method
-  Future<KakaoLoginResult> unlink() async {
+  Future<void> unlink() async {
     final result = await _channel.invokeMethod('unlink');
 
     if (result is FlutterError) {
       throw result;
     } else if (result == null) {
-      return null;
+      throw FlutterError('Unlink error');
     }
-    return _delayedToResult(
-        new KakaoLoginResult._(result.cast<String, dynamic>()));
+    return;
   }
 
   // Helper Delayed Method
@@ -65,7 +64,7 @@ class FlutterKakaoLogin {
 }
 
 // Login Result Status
-enum KakaoLoginStatus { loggedIn, loggedOut, error }
+enum KakaoLoginStatus { loggedIn, loggedOut, error, unlinked }
 
 // Login Result Class
 class KakaoLoginResult {
@@ -86,6 +85,8 @@ class KakaoLoginResult {
         return KakaoLoginStatus.loggedIn;
       case 'loggedOut':
         return KakaoLoginStatus.loggedOut;
+      case 'unlinked':
+        return KakaoLoginStatus.unlinked;
       case 'error':
         return KakaoLoginStatus.error;
     }
