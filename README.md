@@ -179,7 +179,7 @@ See the [setup instructions detail](https://developers.kakao.com/docs/ios#%EA%B0
 
 ## Contributors
 
- Thank you for your interest in the sauce and for your help :)
+ Thank you for your interest in the source and for your help :)
 
   | github                                       | email                                                |
 | :------------------------------------------- | :---------------------------------------------------- |
