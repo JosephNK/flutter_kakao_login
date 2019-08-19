@@ -208,7 +208,7 @@ public class FlutterKakaoLoginPlugin implements MethodCallHandler, PluginRegistr
   }
 
   /**
-   * Get UserMe
+   * Unlink
    */
   private void unlink(Result result) {
     final Result _result = result;
