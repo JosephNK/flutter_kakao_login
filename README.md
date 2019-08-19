@@ -176,3 +176,11 @@ See the [setup instructions detail](https://developers.kakao.com/docs/ios#%EA%B0
     </dict>
 </array>
 ```
+
+## Contributors
+
+ Thank you for your interest in the sauce and for your help :)
+
+  | github                                       | email                                                |
+| :------------------------------------------- | :---------------------------------------------------- |
+| [**@amond**](https://github.com/amondnet) | [**amond@amond.net**](amond@amond.net) |
