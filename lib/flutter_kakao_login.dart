@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class FlutterKakaoLogin {
@@ -10,7 +11,8 @@ class FlutterKakaoLogin {
 
   // Get Current AccessToken Method
   Future<KakaoAccessToken> get currentAccessToken async {
-    final String accessToken = await _channel.invokeMethod('getCurrentAccessToken');
+    final String accessToken =
+        await _channel.invokeMethod('getCurrentAccessToken');
 
     if (accessToken == null) {
       return null;
@@ -20,11 +22,11 @@ class FlutterKakaoLogin {
 
   // Get UserMe Method
   Future<KakaoLoginResult> getUserMe() async {
-    final Map<dynamic, dynamic> result = await _channel.invokeMethod('getUserMe');
+    final Map<dynamic, dynamic> result =
+        await _channel.invokeMethod('getUserMe');
 
     return _delayedToResult(
-        new KakaoLoginResult._(result.cast<String, dynamic>())
-    );
+        new KakaoLoginResult._(result.cast<String, dynamic>()));
   }
 
   // Login Method
@@ -32,8 +34,7 @@ class FlutterKakaoLogin {
     final Map<dynamic, dynamic> result = await _channel.invokeMethod('logIn');
 
     return _delayedToResult(
-        new KakaoLoginResult._(result.cast<String, dynamic>())
-    );
+        new KakaoLoginResult._(result.cast<String, dynamic>()));
   }
 
   // Logout Method
@@ -41,8 +42,19 @@ class FlutterKakaoLogin {
     final Map<dynamic, dynamic> result = await _channel.invokeMethod('logOut');
 
     return _delayedToResult(
-        new KakaoLoginResult._(result.cast<String, dynamic>())
-    );
+        new KakaoLoginResult._(result.cast<String, dynamic>()));
+  }
+
+  // Unlink Method
+  Future<void> unlink() async {
+    final result = await _channel.invokeMethod('unlink');
+
+    if (result is FlutterError) {
+      throw result;
+    } else if (result == null) {
+      throw FlutterError('Unlink error');
+    }
+    return;
   }
 
   // Helper Delayed Method
@@ -52,17 +64,13 @@ class FlutterKakaoLogin {
 }
 
 // Login Result Status
-enum KakaoLoginStatus {
-  loggedIn,
-  loggedOut,
-  error
-}
+enum KakaoLoginStatus { loggedIn, loggedOut, error }
 
 // Login Result Class
 class KakaoLoginResult {
   final KakaoLoginStatus status;
 
-  final KakaoAccountResult account; 
+  final KakaoAccountResult account;
 
   final String errorMessage;
 
@@ -100,7 +108,7 @@ class KakaoAccountResult {
   final String userProfileImagePath;
 
   final String userThumbnailImagePath;
-  
+
   KakaoAccountResult._(Map<String, dynamic> map)
       : userID = map['userID'],
         userEmail = map['userEmail'],
