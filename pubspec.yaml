@@ -1,6 +1,6 @@
 name: flutter_kakao_login
 description: A Flutter plugin for using the native Kakao Login SDKs on Android and iOS
-version: 0.3.0
+version: 0.4.0
 author: JosephNK <nkw0608@gmail.com>
 homepage: https://github.com/JosephNK/flutter_kakao_login
 

@@ -47,3 +47,7 @@
 ## [0.3.0]
 
 * fixed PluginRegistry ActivityResultListener exception for android. [GwonHyeok](https://github.com/GwonHyeok)
+
+## [0.4.0]
+
+* added kakao unlink feature. [amond](https://github.com/amondnet)

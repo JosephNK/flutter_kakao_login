@@ -21,6 +21,7 @@ class _MyAppState extends State<MyApp> {
 
   List<Map<String, String>> _litems = [ { "key": "login", "title": "Login", "subtitle": ""},
                                         { "key": "logout", "title": "Logout", "subtitle": ""},
+                                        { "key": "unlink", "title": "Unlink", "subtitle": ""},
                                         { "key": "account", "title": "Get AccountInfo", "subtitle": ""},
                                         { "key": "accessToken", "title": "Get AccessToken", "subtitle": ""} ];
 
@@ -42,6 +43,10 @@ class _MyAppState extends State<MyApp> {
     final KakaoLoginResult result = await kakaoSignIn.logOut();
     _processLoginResult(result);
     _processAccountResult(null);
+  }
+
+  Future<Null> _unlink() async {
+    await kakaoSignIn.unlink();
   }
 
   Future<Null> _getAccountInfo() async {
@@ -262,6 +267,11 @@ class _MyAppState extends State<MyApp> {
                             case "logout":
                               if (_isLogined) {
                                 _logOut();
+                              }
+                            break;
+                            case "unlink":
+                              if (_isLogined) {
+                                _unlink();
                               }
                             break;
                             case "account":

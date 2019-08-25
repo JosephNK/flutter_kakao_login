@@ -60,6 +60,13 @@ switch (result.status) {
     break;
 }
 ```
+- Unlink Example
+```dart
+Future<Null> _unlink() async {
+    await kakaoSignIn.unlink();
+    // To-do Someting ...
+}
+```
 - Get AccessToken Example
 ```dart
 Future<Null> _getAccessToken() async {
