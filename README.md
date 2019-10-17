@@ -3,7 +3,7 @@ A Flutter plugin for using the native Kakao Login SDKs on Android and iOS.
 
 ## KakaoSDK Version using in plugin
 
-* iOS SDK Version 1.11.1 
+* iOS SDK Version 1.17.2 
 * Android SDK Version  1.16.0
 
 ## Required 
@@ -24,7 +24,7 @@ See [example/lib/main.dart](https://github.com/JosephNK/flutter_kakao_login/blob
 Add this to your package's pubspec.yaml file:
 
 dependencies:
-  flutter_kakao_login: "^0.4.0"
+  flutter_kakao_login: "^0.5.0"
 ```
 ```
 2. Install it

@@ -51,3 +51,7 @@
 ## [0.4.0]
 
 * added kakao unlink feature. [amond](https://github.com/amondnet)
+
+## [0.5.0]
+
+* kakao ios sdk 1.17.2 update.
