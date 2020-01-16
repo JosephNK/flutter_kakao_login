@@ -97,6 +97,7 @@ public class FlutterKakaoLoginHandler
         break;
       case METHOD_UNLINK:
         unlink(_result);
+        break;
       default:
         result.notImplemented();
         break;
