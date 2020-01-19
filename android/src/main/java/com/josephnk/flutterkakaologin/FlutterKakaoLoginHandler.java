@@ -3,6 +3,8 @@ package com.josephnk.flutterkakaologin;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.kakao.auth.ApiErrorCode;
@@ -31,12 +33,13 @@ import java.util.List;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugin.common.PluginRegistry;
 
 /**
  * FlutterKakaoLoginPlugin
  */
 public class FlutterKakaoLoginHandler
-    implements MethodChannel.MethodCallHandler {
+        implements MethodChannel.MethodCallHandler, PluginRegistry.ActivityResultListener {
 
   private static final String LOG_TAG = "KakaoTalkPlugin";
 
@@ -50,6 +53,8 @@ public class FlutterKakaoLoginHandler
   private final MethodChannel channel;
 
   private SessionCallback sessionCallback;
+
+  private Handler uiThreadHandler = new Handler(Looper.getMainLooper());
 
   public FlutterKakaoLoginHandler(Activity activity, MethodChannel channel) {
     this.activity = activity;
@@ -76,16 +81,7 @@ public class FlutterKakaoLoginHandler
         Session.getCurrentSession().open(AuthType.KAKAO_TALK, activity);
         break;
       case METHOD_LOG_OUT:
-        UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
-          @Override
-          public void onCompleteLogout() {
-            _result.success(new HashMap<String, String>() {
-              {
-                put("status", "loggedOut");
-              }
-            });
-          }
-        });
+        logout(_result);
         break;
       case METHOD_GET_CURRENT_ACCESS_TOKEN:
         AccessToken tokenInfo = Session.getCurrentSession().getTokenInfo();
@@ -104,6 +100,46 @@ public class FlutterKakaoLoginHandler
     }
   }
 
+  @Override
+  public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+    Log.v(LOG_TAG, "onActivityResult requestCode: " + requestCode + " resultCode: " + resultCode + " data: " + data);
+    if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)){
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * LogOut
+   */
+  public void logout(MethodChannel.Result result) {
+    final MethodChannel.Result _result = result;
+
+    UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
+      @Override
+      public void onCompleteLogout() {
+        uiThreadHandler.post(new Runnable() {
+          @Override
+          public void run() {
+            _result.success(new HashMap<String, String>() {
+              {
+                put("status", "loggedOut");
+              }
+            });
+          }
+        });
+      }
+      @Override
+      public void onNotSignedUp() {
+        Log.v(LOG_TAG, "kakao - Logout - onNotSignedUp");
+      }
+      @Override
+      public void onSuccess(Long result) {
+        Log.v(LOG_TAG, "kakao - Logout - onSuccess " + result);
+      }
+
+    });
+  }
 
   /**
    * Get UserMe

@@ -44,8 +44,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 /**
  * FlutterKakaoLoginPlugin
  */
-public class FlutterKakaoLoginPlugin
-    implements FlutterPlugin, ActivityAware {
+public class FlutterKakaoLoginPlugin implements FlutterPlugin, ActivityAware {
 
   private static final String CHANNEL_NAME = "flutter_kakao_login";
 
@@ -56,9 +55,8 @@ public class FlutterKakaoLoginPlugin
   private FlutterKakaoLoginHandler handler;
 
   /**
-    * Plugin registration.
-    * for legacy Embedding API
-    */
+   * Plugin registration. for legacy Embedding API
+   */
   public static void registerWith(Registrar registrar) {
     Activity activity = registrar.activity();
     if (activity == null) {
@@ -79,10 +77,6 @@ public class FlutterKakaoLoginPlugin
   private void onAttachedToEngine(BinaryMessenger messenger) {
     channel = new MethodChannel(messenger, CHANNEL_NAME);
 
-    if (activity != null) {
-      handler = new FlutterKakaoLoginHandler(activity, channel);
-      channel.setMethodCallHandler(handler);
-    }
   }
 
   @Override
@@ -95,6 +89,9 @@ public class FlutterKakaoLoginPlugin
   @Override
   public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
     onAttachedToActivity(activityPluginBinding.getActivity());
+    if(handler != null) {
+      activityPluginBinding.addActivityResultListener(handler);
+    }
   }
 
   private void onAttachedToActivity(Activity _activity) {
