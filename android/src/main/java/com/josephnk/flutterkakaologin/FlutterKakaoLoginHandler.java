@@ -193,7 +193,9 @@ public class FlutterKakaoLoginHandler
                 : (userAccount.getDisplayId() == null) ? "" : userAccount.getDisplayId();
         final Gender gender = (userAccount == null) ? Gender.UNKNOWN
                 : (userAccount.getGender() == null) ? Gender.UNKNOWN : userAccount.getGender();
-        final String userGender = (gender.equals(Gender.MALE)) ? "MALE" : (gender.equals(Gender.FEMALE)) ? "FEMALE" : (gender.equals(Gender.OTHER)) ? "OTHER" : "UNKNOWN";
+        final String userGender =  (userAccount == null) ? "" : (userAccount.getGender() == null ) ? "" : userAccount.getGender().getValue();
+        final String userAgeRange =  (userAccount == null) ? "" : (userAccount.getAgeRange() == null ) ? "" : userAccount.getAgeRange().getValue();
+        final String userBirthday =  (userAccount == null) ? "" : (userAccount.getBirthday() == null ) ? "" : userAccount.getBirthday();
 
         Log.v(LOG_TAG, "kakao : onSuccess " + "userID: " + userID + " and userEmail: " + userEmail);
 
@@ -208,6 +210,8 @@ public class FlutterKakaoLoginHandler
             put("userPhoneNumber", userPhoneNumber);
             put("userDisplayID", userDisplayID);
             put("userGender", userGender);
+            put("userAgeRange", userAgeRange);
+            put("userBirthday", userBirthday);
           }
         });
       }

@@ -78,11 +78,11 @@
 											   NSString *userThumbnailImagePath = me.properties[@"thumbnail_image"];
 											   NSString *userPhoneNumber = me.account.phoneNumber;
 											   NSString *userDisplayID = me.account.displayID;
-											   NSString *userGender = @"UNKNOWN";
+											   NSString *userGender = @"";
 											   KOUserGender gender = me.account.gender;
 											   switch (gender) {
 												   case KOUserGenderNull: {
-													   userGender = @"UNKNOWN";
+													   userGender = @"";
 													   break;
 												   }
 												   case KOUserGenderMale: {
@@ -96,6 +96,61 @@
 												   default:
 													   break;
 											   }
+											   NSString *userAgeRange = @"";
+											   KOUserAgeRange ageRange = me.account.ageRange;
+											   switch (ageRange) {
+												   case KOUserAgeRangeNull: {
+													   userAgeRange = @"";
+													   break;
+												   }
+												   case KOUserAgeRangeType0: {
+													   userAgeRange = @"0세~9세";
+													   break;
+												   }
+												   case KOUserAgeRangeType10: {
+													   userAgeRange = @"10세~14세";
+													   break;
+												   }
+												   case KOUserAgeRangeType15: {
+													   userAgeRange = @"15세~19세";
+													   break;
+												   }
+												   case KOUserAgeRangeType20: {
+													   userAgeRange = @"20세~29세";
+													   break;
+												   }
+												   case KOUserAgeRangeType30: {
+													   userAgeRange = @"30세~39세";
+													   break;
+												   }
+												   case KOUserAgeRangeType40: {
+													   userAgeRange = @"40세~49세";
+													   break;
+												   }
+												   case KOUserAgeRangeType50: {
+													   userAgeRange = @"50세~59세";
+													   break;
+												   }
+												   case KOUserAgeRangeType60: {
+													   userAgeRange = @"60세~69세";
+													   break;
+												   }
+												   case KOUserAgeRangeType70: {
+													   userAgeRange = @"70세~79세";
+													   break;
+												   }
+												   case KOUserAgeRangeType80: {
+													   userAgeRange = @"80세~89세";
+													   break;
+												   }
+												   case KOUserAgeRangeType90: {
+													   userAgeRange = @"90세 이상";
+													   break;
+												   }
+												 default:
+													 break;
+											   }
+											   NSString *userBirthday = me.account.birthday;
 											   
 											   NSMutableDictionary *info = [NSMutableDictionary new];
 											   info[@"status"] = @"loggedIn";
@@ -122,6 +177,12 @@
 											   }
 											   if (userGender) {
 												   info[@"userGender"] = userGender;
+											   }
+											   if (userAgeRange) {
+												   info[@"userAgeRange"] = userAgeRange;
+											   }
+											   if (userBirthday) {
+												   info[@"userBirthday"] = userBirthday;
 											   }
 											   result(info);
 										   }
