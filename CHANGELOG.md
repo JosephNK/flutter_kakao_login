@@ -60,3 +60,7 @@
 
 * added kakao getGender.
 * migration pre 1.12 android. [myriky](https://github.com/myriky)
+
+## [0.7.0]
+
+* added kakao getAgeRange, getBirthday.

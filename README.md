@@ -24,7 +24,7 @@ See [example/lib/main.dart](https://github.com/JosephNK/flutter_kakao_login/blob
 Add this to your package's pubspec.yaml file:
 
 dependencies:
-  flutter_kakao_login: "^0.6.0"
+  flutter_kakao_login: "^0.7.0"
 ```
 ```
 2. Install it
@@ -89,6 +89,8 @@ Future<Null> _getAccountInfo() async {
       final userDisplayID = account.userDisplayID;
       final userNickname = account.userNickname;
       final userGender = account.userGender;
+      final userAgeRange = account.userAgeRange;
+      final userBirthday = account.userBirthday;
       final userProfileImagePath = account.userProfileImagePath;
       final userThumbnailImagePath = account.userThumbnailImagePath;
       // To-do Someting ...
