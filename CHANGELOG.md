@@ -55,3 +55,8 @@
 ## [0.5.0]
 
 * kakao ios sdk 1.17.2 update.
+
+## [0.6.0]
+
+* added kakao getGender.
+* migration pre 1.12 android. [myriky](https://github.com/myriky)
