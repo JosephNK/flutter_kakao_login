@@ -78,6 +78,24 @@
 											   NSString *userThumbnailImagePath = me.properties[@"thumbnail_image"];
 											   NSString *userPhoneNumber = me.account.phoneNumber;
 											   NSString *userDisplayID = me.account.displayID;
+											   NSString *userGender = @"UNKNOWN";
+											   KOUserGender gender = me.account.gender;
+											   switch (gender) {
+												   case KOUserGenderNull: {
+													   userGender = @"UNKNOWN";
+													   break;
+												   }
+												   case KOUserGenderMale: {
+													   userGender = @"MALE";
+													   break;
+												   }
+												   case KOUserGenderFemale: {
+													   userGender = @"FEMALE";
+													   break;
+												   }
+												   default:
+													   break;
+											   }
 											   
 											   NSMutableDictionary *info = [NSMutableDictionary new];
 											   info[@"status"] = @"loggedIn";
@@ -101,6 +119,9 @@
 											   }
 											   if (userDisplayID) {
 												   info[@"userDisplayID"] = userDisplayID;
+											   }
+											   if (userGender) {
+												   info[@"userGender"] = userGender;
 											   }
 											   result(info);
 										   }

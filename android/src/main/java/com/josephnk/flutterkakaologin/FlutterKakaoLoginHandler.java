@@ -23,6 +23,7 @@ import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.kakao.usermgmt.callback.MeV2ResponseCallback;
 import com.kakao.usermgmt.callback.UnLinkResponseCallback;
 import com.kakao.usermgmt.response.MeV2Response;
+import com.kakao.usermgmt.response.model.Gender;
 import com.kakao.usermgmt.response.model.UserAccount;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
@@ -190,6 +191,9 @@ public class FlutterKakaoLoginHandler
                 : (userAccount.getPhoneNumber() == null) ? "" : userAccount.getPhoneNumber();
         final String userDisplayID = (userAccount == null) ? ""
                 : (userAccount.getDisplayId() == null) ? "" : userAccount.getDisplayId();
+        final Gender gender = (userAccount == null) ? Gender.UNKNOWN
+                : (userAccount.getGender() == null) ? Gender.UNKNOWN : userAccount.getGender();
+        final String userGender = (gender.equals(Gender.MALE)) ? "MALE" : (gender.equals(Gender.FEMALE)) ? "FEMALE" : (gender.equals(Gender.OTHER)) ? "OTHER" : "UNKNOWN";
 
         Log.v(LOG_TAG, "kakao : onSuccess " + "userID: " + userID + " and userEmail: " + userEmail);
 
@@ -203,6 +207,7 @@ public class FlutterKakaoLoginHandler
             put("userEmail", userEmail);
             put("userPhoneNumber", userPhoneNumber);
             put("userDisplayID", userDisplayID);
+            put("userGender", userGender);
           }
         });
       }
