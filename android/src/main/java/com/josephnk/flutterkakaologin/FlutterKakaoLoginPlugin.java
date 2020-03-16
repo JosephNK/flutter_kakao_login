@@ -46,79 +46,82 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
  */
 public class FlutterKakaoLoginPlugin implements FlutterPlugin, ActivityAware {
 
-  private static final String CHANNEL_NAME = "flutter_kakao_login";
+    private static final String CHANNEL_NAME = "flutter_kakao_login";
 
-  private static final String LOG_TAG = "KakaoTalkPlugin";
+    private static final String LOG_TAG = "KakaoTalkPlugin";
 
-  private Activity activity;
-  private MethodChannel channel;
-  private FlutterKakaoLoginHandler handler;
+    private static Registrar registrar;
 
-  /**
-   * Plugin registration. for legacy Embedding API
-   */
-  public static void registerWith(Registrar registrar) {
-    Activity activity = registrar.activity();
-    if (activity == null) {
-      return;
+    private Activity activity;
+    private MethodChannel channel;
+    private FlutterKakaoLoginHandler handler;
+
+    /**
+     * Plugin registration. for legacy Embedding API
+     */
+    public static void registerWith(Registrar registrar) {
+        Activity activity = registrar.activity();
+        if (activity == null) {
+            return;
+        }
+        FlutterKakaoLoginPlugin.registrar = registrar;
+
+        final FlutterKakaoLoginPlugin instance = new FlutterKakaoLoginPlugin();
+        instance.onAttachedToEngine(registrar.messenger());
+        instance.onAttachedToActivity(activity);
     }
 
-    final FlutterKakaoLoginPlugin instance = new FlutterKakaoLoginPlugin();
-    instance.onAttachedToEngine(registrar.messenger());
-    instance.onAttachedToActivity(activity);
-  }
 
-
-  @Override
-  public void onAttachedToEngine(FlutterPluginBinding flutterPluginBinding) {
-    onAttachedToEngine(flutterPluginBinding.getBinaryMessenger());
-  }
-
-  private void onAttachedToEngine(BinaryMessenger messenger) {
-    channel = new MethodChannel(messenger, CHANNEL_NAME);
-
-  }
-
-  @Override
-  public void onDetachedFromEngine(FlutterPluginBinding binding) {
-    channel.setMethodCallHandler(null);
-    channel = null;
-    handler = null;
-  }
-
-  @Override
-  public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
-    onAttachedToActivity(activityPluginBinding.getActivity());
-    if(handler != null) {
-      activityPluginBinding.addActivityResultListener(handler);
+    @Override
+    public void onAttachedToEngine(FlutterPluginBinding flutterPluginBinding) {
+        onAttachedToEngine(flutterPluginBinding.getBinaryMessenger());
     }
-  }
 
-  private void onAttachedToActivity(Activity _activity) {
-    activity = _activity;
+    private void onAttachedToEngine(BinaryMessenger messenger) {
+        channel = new MethodChannel(messenger, CHANNEL_NAME);
 
-    if (activity != null && channel != null) {
-      handler = new FlutterKakaoLoginHandler(activity, channel);
-      channel.setMethodCallHandler(handler);
     }
-  }
 
-  @Override
-  public void onDetachedFromActivityForConfigChanges() {
-    onDetachedFromActivity();
-  }
+    @Override
+    public void onDetachedFromEngine(FlutterPluginBinding binding) {
+        channel.setMethodCallHandler(null);
+        channel = null;
+        handler = null;
+    }
 
-  @Override
-  public void onReattachedToActivityForConfigChanges(ActivityPluginBinding activityPluginBinding) {
-    onAttachedToActivity(activityPluginBinding.getActivity());
-    // after a configuration change.
-  }
+    @Override
+    public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
+        onAttachedToActivity(activityPluginBinding.getActivity());
+        if (handler != null) {
+            activityPluginBinding.addActivityResultListener(handler);
+        }
+    }
 
-  @Override
-  public void onDetachedFromActivity() {
-    channel.setMethodCallHandler(null);
-    activity = null;
-    handler = null;
-  }
+    private void onAttachedToActivity(Activity _activity) {
+        activity = _activity;
+        if (activity != null && channel != null) {
+            handler = new FlutterKakaoLoginHandler(activity, channel);
+            FlutterKakaoLoginPlugin.registrar.addActivityResultListener(handler);
+            channel.setMethodCallHandler(handler);
+        }
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+        onDetachedFromActivity();
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(ActivityPluginBinding activityPluginBinding) {
+        onAttachedToActivity(activityPluginBinding.getActivity());
+        // after a configuration change.
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+        channel.setMethodCallHandler(null);
+        activity = null;
+        handler = null;
+    }
 
 }
