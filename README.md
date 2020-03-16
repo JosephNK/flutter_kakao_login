@@ -24,7 +24,7 @@ See [example/lib/main.dart](https://github.com/JosephNK/flutter_kakao_login/blob
 Add this to your package's pubspec.yaml file:
 
 dependencies:
-  flutter_kakao_login: "^0.7.0"
+  flutter_kakao_login: "^0.8.0"
 ```
 ```
 2. Install it
@@ -195,3 +195,4 @@ See the [setup instructions detail](https://developers.kakao.com/docs/ios#%EA%B0
 | :------------------------------------------- | :---------------------------------------------------- |
 | [**@amond**](https://github.com/amondnet) | [**amond@amond.net**](amond@amond.net) |
 | [**@myriky**](https://github.com/myriky) | [**riky@myriky.net**](riky@myriky.net) |
+| [**@kunkaamd**](https://github.com) |

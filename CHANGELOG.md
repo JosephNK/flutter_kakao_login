@@ -64,3 +64,7 @@
 ## [0.7.0]
 
 * added kakao getAgeRange, getBirthday.
+
+## [0.8.0]
+
+* update conflict with multi_image_picker for android [kunkaamd](https://github.com/kunkaamd)
