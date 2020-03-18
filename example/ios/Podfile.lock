@@ -2,27 +2,30 @@ PODS:
   - Flutter (1.0.0)
   - flutter_kakao_login (0.0.8):
     - Flutter
-    - KakaoOpenSDK (~> 1.17.2)
-  - KakaoOpenSDK (1.17.2):
-    - KakaoOpenSDK/KakaoCommon (= 1.17.2)
-    - KakaoOpenSDK/KakaoLink (= 1.17.2)
-    - KakaoOpenSDK/KakaoMessageTemplate (= 1.17.2)
-    - KakaoOpenSDK/KakaoNavi (= 1.17.2)
-    - KakaoOpenSDK/KakaoOpenSDK (= 1.17.2)
-  - KakaoOpenSDK/KakaoCommon (1.17.2)
-  - KakaoOpenSDK/KakaoLink (1.17.2):
+    - KakaoOpenSDK (~> 1.21.1)
+  - KakaoOpenSDK (1.21.1):
+    - KakaoOpenSDK/KakaoCommon (= 1.21.1)
+    - KakaoOpenSDK/KakaoLink (= 1.21.1)
+    - KakaoOpenSDK/KakaoMessageTemplate (= 1.21.1)
+    - KakaoOpenSDK/KakaoNavi (= 1.21.1)
+    - KakaoOpenSDK/KakaoOpenSDK (= 1.21.1)
+    - KakaoOpenSDK/KakaoPlusFriend (= 1.21.1)
+  - KakaoOpenSDK/KakaoCommon (1.21.1)
+  - KakaoOpenSDK/KakaoLink (1.21.1):
     - KakaoOpenSDK/KakaoCommon
-  - KakaoOpenSDK/KakaoMessageTemplate (1.17.2)
-  - KakaoOpenSDK/KakaoNavi (1.17.2):
+  - KakaoOpenSDK/KakaoMessageTemplate (1.21.1)
+  - KakaoOpenSDK/KakaoNavi (1.21.1):
     - KakaoOpenSDK/KakaoCommon
-  - KakaoOpenSDK/KakaoOpenSDK (1.17.2)
+  - KakaoOpenSDK/KakaoOpenSDK (1.21.1)
+  - KakaoOpenSDK/KakaoPlusFriend (1.21.1):
+    - KakaoOpenSDK/KakaoCommon
 
 DEPENDENCIES:
   - Flutter (from `Pods/.symlinks/flutter/ios`)
   - flutter_kakao_login (from `Pods/.symlinks/plugins/flutter_kakao_login/ios`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - KakaoOpenSDK
 
 EXTERNAL SOURCES:
@@ -33,9 +36,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_kakao_login: 792d15a6f07557cb703f759ffa85ce0206b1fe84
-  KakaoOpenSDK: 1fc43f9025e30a7c1f7c5342bf51744c6c93a500
+  flutter_kakao_login: 37132a7637675d65898dc09d1a524bdbb26638ce
+  KakaoOpenSDK: 7a7b728491fc199bf2186fec5bbf2c70ba14f474
 
 PODFILE CHECKSUM: 028fe5590dcb8ffd838e4b21758b613901a1d92c
 
-COCOAPODS: 1.7.5
+COCOAPODS: 1.9.0
