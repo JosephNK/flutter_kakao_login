@@ -1,19 +1,20 @@
 # Flutter Kakao Login PlugIn
+
 A Flutter plugin for using the native Kakao Login SDKs on Android and iOS.
 
 ## KakaoSDK Version using in plugin
 
-* iOS SDK Version 1.17.2 
-* Android SDK Version  1.16.0
+- iOS SDK Version 1.21.1
+- Android SDK Version 1.16.0
 
-## Required 
+## Required
 
-* iOS Required : Deployment Target 9.0 Higher.
-* Android Required : Compile SDK 28 Higher.
+- iOS Required : Deployment Target 9.0 Higher.
+- Android Required : Compile SDK 28 Higher.
 
-## Support  
+## Support
 
-* AndroidX
+- AndroidX
 
 ## Usage
 
@@ -24,8 +25,9 @@ See [example/lib/main.dart](https://github.com/JosephNK/flutter_kakao_login/blob
 Add this to your package's pubspec.yaml file:
 
 dependencies:
-  flutter_kakao_login: "^0.8.0"
+  flutter_kakao_login: "^0.8.1"
 ```
+
 ```
 2. Install it
 You can install packages from the command line:
@@ -36,13 +38,16 @@ $ flutter packages get
 
 Alternatively, your editor might support flutter packages get. Check the docs for your editor to learn more.
 ```
+
 ```
 3. Import it
 Now in your Dart code, you can use:
 
     import 'package:flutter_kakao_login/flutter_kakao_login.dart';
 ```
+
 - Login & Logout Example
+
 ```dart
 FlutterKakaoLogin kakaoSignIn = new FlutterKakaoLogin()
 final KakaoLoginResult result = await kakaoSignIn.logIn();
@@ -60,14 +65,18 @@ switch (result.status) {
     break;
 }
 ```
+
 - Unlink Example
+
 ```dart
 Future<Null> _unlink() async {
     await kakaoSignIn.unlink();
     // To-do Someting ...
 }
 ```
+
 - Get AccessToken Example
+
 ```dart
 Future<Null> _getAccessToken() async {
     final KakaoAccessToken accessToken = await (kakaoSignIn.currentAccessToken);
@@ -77,7 +86,9 @@ Future<Null> _getAccessToken() async {
     }
 }
 ```
+
 - Get UserMe Example
+
 ```dart
 Future<Null> _getAccountInfo() async {
     final KakaoLoginResult result = await kakaoSignIn.getUserMe();
@@ -189,10 +200,10 @@ See the [setup instructions detail](https://developers.kakao.com/docs/ios#%EA%B0
 
 ## Contributors
 
- Thank you for your interest in the source and for your help :)
+Thank you for your interest in the source and for your help :)
 
-  | github                                       | email                                                |
-| :------------------------------------------- | :---------------------------------------------------- |
+| github                                    | email                                  |
+| :---------------------------------------- | :------------------------------------- |
 | [**@amond**](https://github.com/amondnet) | [**amond@amond.net**](amond@amond.net) |
-| [**@myriky**](https://github.com/myriky) | [**riky@myriky.net**](riky@myriky.net) |
-| [**@kunkaamd**](https://github.com) |
+| [**@myriky**](https://github.com/myriky)  | [**riky@myriky.net**](riky@myriky.net) |
+| [**@kunkaamd**](https://github.com)       |
