@@ -4,8 +4,8 @@ A Flutter plugin for using the native Kakao Login SDKs on Android and iOS.
 
 ## KakaoSDK Version using in plugin
 
-- iOS SDK Version 1.21.1
-- Android SDK Version 1.16.0
+- iOS SDK Version 1.23.3
+- Android SDK Version 1.23.0
 
 ## Required
 
@@ -25,7 +25,7 @@ See [example/lib/main.dart](https://github.com/JosephNK/flutter_kakao_login/blob
 Add this to your package's pubspec.yaml file:
 
 dependencies:
-  flutter_kakao_login: "^0.8.1"
+  flutter_kakao_login: "^1.0.0"
 ```
 
 ```
@@ -46,32 +46,36 @@ Now in your Dart code, you can use:
     import 'package:flutter_kakao_login/flutter_kakao_login.dart';
 ```
 
-- Login & Logout Example
+- Login Example
 
 ```dart
-FlutterKakaoLogin kakaoSignIn = new FlutterKakaoLogin()
-final KakaoLoginResult result = await kakaoSignIn.logIn();
-switch (result.status) {
-    case KakaoLoginStatus.loggedIn:
-        _updateMessage('LoggedIn by the user.\n'
-                       '- UserID is ${result.account.userID}\n'
-                       '- UserEmail is ${result.account.userEmail} ');
-    break;
-    case KakaoLoginStatus.loggedOut:
-        _updateMessage('LoggedOut by the user.');
-    break;
-    case KakaoLoginStatus.error:
-        _updateMessage('This is Kakao error message : ${result.errorMessage}');
-    break;
+try {
+    final result = await kakaoSignIn.logIn();
+    // To-do Someting ...
+} catch (e) {
+    print("${e.code} ${e.message}");
+}
+```
+
+- Logout Example
+
+```dart
+try {
+    final result = await kakaoSignIn.logOut();
+    // To-do Someting ...
+} catch (e) {
+    print("${e.code} ${e.message}");
 }
 ```
 
 - Unlink Example
 
 ```dart
-Future<Null> _unlink() async {
-    await kakaoSignIn.unlink();
-    // To-do Someting ...
+try {
+    final result = await kakaoSignIn.unlink();
+    _// To-do Someting ..
+} catch (e) {
+    print("${e.code} ${e.message}");
 }
 ```
 
@@ -91,22 +95,26 @@ Future<Null> _getAccessToken() async {
 
 ```dart
 Future<Null> _getAccountInfo() async {
-    final KakaoLoginResult result = await kakaoSignIn.getUserMe();
-    if (result != null && result.status != KakaoLoginStatus.error) {
-      final KakaoAccountResult account = result.account;
-      final userID = account.userID;
-      final userEmail = account.userEmail;
-      final userPhoneNumber = account.userPhoneNumber;
-      final userDisplayID = account.userDisplayID;
-      final userNickname = account.userNickname;
-      final userGender = account.userGender;
-      final userAgeRange = account.userAgeRange;
-      final userBirthday = account.userBirthday;
-      final userProfileImagePath = account.userProfileImagePath;
-      final userThumbnailImagePath = account.userThumbnailImagePath;
-      // To-do Someting ...
+try {
+    final result = await kakaoSignIn.getUserMe();
+    final KakaoAccountResult account = result.account;
+    if (account != null) {
+        final KakaoAccountResult account = result.account;
+        final userID = account.userID;
+        final userEmail = account.userEmail;
+        final userPhoneNumber = account.userPhoneNumber;
+        final userDisplayID = account.userDisplayID;
+        final userNickname = account.userNickname;
+        final userGender = account.userGender;
+        final userAgeRange = account.userAgeRange;
+        final userBirthday = account.userBirthday;
+        final userProfileImagePath = account.userProfileImagePath;
+        final userThumbnailImagePath = account.userThumbnailImagePath;
+        // To-do Someting ...
     }
-  }
+} catch (e) {
+    print("${e.code} ${e.message}");
+}
 ```
 
 ## Installation

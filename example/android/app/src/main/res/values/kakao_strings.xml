@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="kakao_app_key">[APP_KEY]</string>
+    <string name="kakao_app_key">0123456789abcdefghijklmn</string>
 </resources>
