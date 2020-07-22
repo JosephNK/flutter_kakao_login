@@ -2,3 +2,5 @@ example/* linguist-vendored
 *.java linguist-vendored
 *.h linguist-vendored
 *.m linguist-vendored
+*.kt linguist-vendored
+*.swift linguist-vendored
