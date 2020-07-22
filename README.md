@@ -47,7 +47,7 @@ try {
 ```dart
 try {
     final result = await kakaoSignIn.unlink();
-    _// To-do Someting ..
+    // To-do Someting ..
 } catch (e) {
     print("${e.code} ${e.message}");
 }
