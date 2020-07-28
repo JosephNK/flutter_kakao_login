@@ -139,6 +139,10 @@ See the [setup instructions detail](https://developers.kakao.com/docs/android/ge
 
 See the [setup instructions detail](https://developers.kakao.com/docs/ios#%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%84%B1).
 
+[AppDelegate]
+
+See the [example/ios/Runner/AppDelegate.swift](https://github.com/JosephNK/flutter_kakao_login/blob/master/example/ios/Runner/AppDelegate.swift)
+
 [info.plst]
 
 ```xml
