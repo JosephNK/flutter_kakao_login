@@ -47,7 +47,7 @@ public class FlutterKakaoLoginPlugin: FlutterPlugin, MethodCallHandler, Activity
 
     @JvmStatic
     fun registerWith(registrar: Registrar) {
-      Log.d(TAG, "registerWith")
+      Log.d(TAG, "[registerWith]")
       val activity = registrar.activity() ?: return
       FlutterKakaoLoginPlugin.registrar = registrar
 
@@ -60,12 +60,12 @@ public class FlutterKakaoLoginPlugin: FlutterPlugin, MethodCallHandler, Activity
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     //channel = MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), name)
     //channel.setMethodCallHandler(this);
-    Log.d(TAG, "onAttachedToEngine")
+    Log.d(TAG, "[onAttachedToEngine]")
     onInstanceAtAttachedToEngine(flutterPluginBinding.binaryMessenger)
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-    Log.d(TAG, "onDetachedFromEngine")
+    Log.d(TAG, "[onDetachedFromEngine]")
     onDetachedFromActivity()
   }
 
@@ -74,7 +74,7 @@ public class FlutterKakaoLoginPlugin: FlutterPlugin, MethodCallHandler, Activity
 
     when (call.method) {
       "logIn" -> {
-        Log.d(TAG, "onMethodCall logIn")
+        Log.d(TAG, "[onMethodCall] -> logIn")
 
         // ensure old session was closed
         Session.getCurrentSession().close()
@@ -84,28 +84,27 @@ public class FlutterKakaoLoginPlugin: FlutterPlugin, MethodCallHandler, Activity
         Session.getCurrentSession().open(AuthType.KAKAO_TALK, activity)
       }
       "logOut" -> {
-        Log.d(TAG, "onMethodCall logOut")
+        Log.d(TAG, "[onMethodCall] -> logOut")
         logout(methodResult)
       }
       "getCurrentAccessToken" -> {
-        Log.d(TAG, "onMethodCall getCurrentAccessToken")
+        Log.d(TAG, "[onMethodCall] -> getCurrentAccessToken")
         val tokenInfo = Session.getCurrentSession().tokenInfo
         val accessToken = tokenInfo.accessToken
         methodResult.success(accessToken)
       }
       "getUserMe" -> {
-        Log.d(TAG, "onMethodCall getUserMe")
+        Log.d(TAG, "[onMethodCall] -> getUserMe")
         requestMe(methodResult)
       }
       "unlink" -> {
-        Log.d(TAG, "onMethodCall unlink")
+        Log.d(TAG, "[onMethodCall] -> unlink")
         unlink(methodResult)
       }
       "hashKey" -> {
-        Log.d(TAG, "onMethodCall hashKey")
+        Log.d(TAG, "[onMethodCall] -> hashKey")
         if (activity != null) {
           val hashKey = Util.getKeyHash(activity!!)
-          Log.d(TAG, "hashKey: $hashKey")
           methodResult.success(hashKey)
         }
       }
@@ -116,13 +115,13 @@ public class FlutterKakaoLoginPlugin: FlutterPlugin, MethodCallHandler, Activity
   // Instance Method
   //
   private fun onInstanceAtAttachedToEngine(messenger: BinaryMessenger) {
-    Log.d(TAG, "onInstanceAtAttachedToEngine")
+    Log.d(TAG, "[onInstanceAtAttachedToEngine]")
     channel = MethodChannel(messenger, name)
     channel.setMethodCallHandler(this)
   }
 
   private fun onInstanceAtAttachedToActivity(_activity: Activity) {
-    Log.d(TAG, "onInstanceAtAttachedToActivity")
+    Log.d(TAG, "[onInstanceAtAttachedToActivity]")
     activity = _activity
     if (activity != null && channel != null) {
       try {
@@ -136,7 +135,7 @@ public class FlutterKakaoLoginPlugin: FlutterPlugin, MethodCallHandler, Activity
   // PluginRegistry.ActivityResultListener
   //
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-    Log.d(TAG, "onActivityResult")
+    Log.d(TAG, "[onActivityResult]")
     if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
       return true
     }
@@ -146,24 +145,24 @@ public class FlutterKakaoLoginPlugin: FlutterPlugin, MethodCallHandler, Activity
   // ActivityAware
   //
   override fun onDetachedFromActivity() {
-    Log.d(TAG, "onDetachedFromActivity")
+    Log.d(TAG, "[onDetachedFromActivity]")
     channel.setMethodCallHandler(null)
     activity = null
   }
 
   override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-    Log.d(TAG, "onReattachedToActivityForConfigChanges")
+    Log.d(TAG, "[onReattachedToActivityForConfigChange]")
     onInstanceAtAttachedToActivity(binding.activity)
   }
 
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-    Log.d(TAG, "onAttachedToActivity")
+    Log.d(TAG, "[onAttachedToActivity]")
     onInstanceAtAttachedToActivity(binding.activity)
     binding.addActivityResultListener(this)
   }
 
   override fun onDetachedFromActivityForConfigChanges() {
-    Log.d(TAG, "onDetachedFromActivityForConfigChanges")
+    Log.d(TAG, "[onDetachedFromActivityForConfigChanges]")
     onDetachedFromActivity()
   }
 
@@ -173,22 +172,22 @@ public class FlutterKakaoLoginPlugin: FlutterPlugin, MethodCallHandler, Activity
     var methodResult: Result = result
 
     fun removeCallback() {
-      Log.d(TAG, "KakaoSessionCallback removeCallback")
+      Log.d(TAG, "[KakaoSessionCallback] removeCallback")
       Session.getCurrentSession().removeCallback(sessionCallback)
     }
 
     override fun onSessionOpened() {
-      Log.d(TAG, "KakaoSessionCallback Open")
+      Log.d(TAG, "[KakaoSessionCallback] Open")
       UserManagement.getInstance().me(object : MeV2ResponseCallback() {
         override fun onSessionClosed(errorResult: ErrorResult?) {
-          Log.d(TAG, "failed to update profile. msg = $errorResult")
+          Log.d(TAG, "[KakaoSessionCallback] failed to update profile")
           removeCallback()
 
           val errorMessage = errorResult?.errorMessage ?: ""
           methodResult.error( "LOGIN_ERR", errorMessage, "")
         }
         override fun onSuccess(resultKakao: MeV2Response?) {
-          Log.d(TAG, "success to update profile. msg = $resultKakao")
+          Log.d(TAG, "[KakaoSessionCallback] success to update profile.")
           removeCallback()
 
           val userID = resultKakao?.id ?: ""
@@ -205,7 +204,8 @@ public class FlutterKakaoLoginPlugin: FlutterPlugin, MethodCallHandler, Activity
     }
 
     override fun onSessionOpenFailed(exception: KakaoException) {
-      Log.d(TAG, exception.message)
+      Log.d(TAG, "[KakaoSessionCallback] onSessionOpenFailed")
+      removeCallback()
 
       val errorMessage = exception.toString()
       methodResult.error( "OPEN_ERR", errorMessage, "")

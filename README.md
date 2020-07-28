@@ -52,19 +52,16 @@ try {
 - Get AccessToken Example
 
 ```dart
-Future<Null> _getAccessToken() async {
-    final KakaoAccessToken accessToken = await (kakaoSignIn.currentAccessToken);
-    if (accessToken != null) {
-      final token = accessToken.token;
-      // To-do Someting ...
-    }
+final KakaoAccessToken accessToken = await (kakaoSignIn.currentAccessToken);
+if (accessToken != null) {
+    final token = accessToken.token;
+    // To-do Someting ...
 }
 ```
 
 - Get UserMe Example
 
 ```dart
-Future<Null> _getAccountInfo() async {
 try {
     final result = await kakaoSignIn.getUserMe();
     final KakaoAccountResult account = result.account;
