@@ -6,7 +6,7 @@
 
 - [updated] kakao sdk for iOS 1.23.3.
 - [updated] kakao sdk for Android 1.23.0.
-- [updated] native swift & kotlin.
+- [updated] migration native swift & kotlin.
 - [updated] FlutterKakaoLogin class.
 
 ## [0.8.1]
