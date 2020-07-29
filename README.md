@@ -1,5 +1,7 @@
 # Flutter Kakao Login PlugIn
 
+![](./doc/images/kakao_login_large_narrow.png)
+
 [![pub](https://img.shields.io/pub/v/flutter_kakao_login.svg?style=flat)](https://pub.dev/packages/flutter_kakao_login)
 
 A Flutter plugin for using the native Kakao Login SDKs on Android and iOS.
