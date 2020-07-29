@@ -24,6 +24,7 @@ See [example/lib/main.dart](https://github.com/JosephNK/flutter_kakao_login/blob
 
 ```dart
 try {
+    final FlutterKakaoLogin kakaoSignIn = new FlutterKakaoLogin();
     final result = await kakaoSignIn.logIn();
     // To-do Someting ...
 } catch (e) {
@@ -35,6 +36,7 @@ try {
 
 ```dart
 try {
+    final FlutterKakaoLogin kakaoSignIn = new FlutterKakaoLogin();
     final result = await kakaoSignIn.logOut();
     // To-do Someting ...
 } catch (e) {
@@ -46,6 +48,7 @@ try {
 
 ```dart
 try {
+    final FlutterKakaoLogin kakaoSignIn = new FlutterKakaoLogin();
     final result = await kakaoSignIn.unlink();
     // To-do Someting ..
 } catch (e) {
@@ -56,6 +59,7 @@ try {
 - Get AccessToken Example
 
 ```dart
+final FlutterKakaoLogin kakaoSignIn = new FlutterKakaoLogin();
 final KakaoAccessToken accessToken = await (kakaoSignIn.currentAccessToken);
 if (accessToken != null) {
     final token = accessToken.token;
@@ -67,6 +71,7 @@ if (accessToken != null) {
 
 ```dart
 try {
+    final FlutterKakaoLogin kakaoSignIn = new FlutterKakaoLogin();
     final result = await kakaoSignIn.getUserMe();
     final KakaoAccountResult account = result.account;
     if (account != null) {
