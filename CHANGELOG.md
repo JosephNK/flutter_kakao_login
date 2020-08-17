@@ -1,3 +1,10 @@
+## [1.2.0]
+
+- [added] getRefreshToken
+- [added] getBirthyear
+- [fixed] age_range, birthday, gender null value
+- [updated] changed KakaoAccessToken -> KakaoToken
+
 ## [1.1.0]
 
 - [fixed] when pressing back or disagree button for the second time, app crashes for android.

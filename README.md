@@ -60,9 +60,20 @@ try {
 
 ```dart
 final FlutterKakaoLogin kakaoSignIn = new FlutterKakaoLogin();
-final KakaoAccessToken accessToken = await (kakaoSignIn.currentAccessToken);
+final KakaoToken token = await (kakaoSignIn.currentToken);
+final accessToken = token.accessToken;
 if (accessToken != null) {
-    final token = accessToken.token;
+    // To-do Someting ...
+}
+```
+
+- Get RefreshToken Example
+
+```dart
+final FlutterKakaoLogin kakaoSignIn = new FlutterKakaoLogin();
+final KakaoToken token = await (kakaoSignIn.currentToken);
+final refreshToken = token.refreshToken;
+if (refreshToken != null) {
     // To-do Someting ...
 }
 ```
