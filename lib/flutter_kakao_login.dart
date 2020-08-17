@@ -6,16 +6,15 @@ class FlutterKakaoLogin {
   static const MethodChannel _channel =
       const MethodChannel('flutter_kakao_login');
 
-  Future<bool> get isLoggedIn async => await currentAccessToken != null;
+  Future<bool> get isLoggedIn async => await currentToken != null;
 
-  // Get Current AccessToken Method
-  Future<KakaoAccessToken> get currentAccessToken async {
+  // Get Current Token Method
+  Future<KakaoToken> get currentToken async {
     final String accessToken =
         await _channel.invokeMethod('getCurrentAccessToken');
-    if (accessToken == null) {
-      return null;
-    }
-    return new KakaoAccessToken(accessToken);
+    final String refreshToken =
+        await _channel.invokeMethod('getCurrentRefreshToken');
+    return new KakaoToken(accessToken, refreshToken);
   }
 
   // HashKey Method
@@ -112,6 +111,7 @@ class KakaoAccountResult {
   final String userNickname;
   final String userGender;
   final String userAgeRange;
+  final String userBirthyear;
   final String userBirthday;
   final String userProfileImagePath;
   final String userThumbnailImagePath;
@@ -124,14 +124,16 @@ class KakaoAccountResult {
         userNickname = map['userNickname'],
         userGender = map['userGender'],
         userAgeRange = map['userAgeRange'],
+        userBirthyear = map['userBirthyear'],
         userBirthday = map['userBirthday'],
         userProfileImagePath = map['userProfileImagePath'],
         userThumbnailImagePath = map['userThumbnailImagePath'];
 }
 
-// AccessToken Class
-class KakaoAccessToken {
-  String token;
+// Token Class
+class KakaoToken {
+  String accessToken;
+  String refreshToken;
 
-  KakaoAccessToken(this.token);
+  KakaoToken(this.accessToken, this.refreshToken);
 }

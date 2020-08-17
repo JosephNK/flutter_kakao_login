@@ -93,6 +93,12 @@ public class FlutterKakaoLoginPlugin: FlutterPlugin, MethodCallHandler, Activity
         val accessToken = tokenInfo.accessToken
         methodResult.success(accessToken)
       }
+      "getCurrentRefreshToken" -> {
+        Log.d(TAG, "[onMethodCall] -> getCurrentRefreshToken")
+        val tokenInfo = Session.getCurrentSession().tokenInfo
+        val refreshToken = tokenInfo.refreshToken
+        methodResult.success(refreshToken)
+      }
       "getUserMe" -> {
         Log.d(TAG, "[onMethodCall] -> getUserMe")
         requestMe(methodResult)
@@ -236,7 +242,11 @@ public class FlutterKakaoLoginPlugin: FlutterPlugin, MethodCallHandler, Activity
             "properties.nickname",
             "properties.profile_image",
             "properties.thumbnail_image",
-            "kakao_account.email"
+            "kakao_account.profile",
+            "kakao_account.email",
+            "kakao_account.age_range",
+            "kakao_account.birthday",
+            "kakao_account.gender"
     )
 
     UserManagement.getInstance().me(keys, object : MeV2ResponseCallback() {
@@ -270,6 +280,7 @@ public class FlutterKakaoLoginPlugin: FlutterPlugin, MethodCallHandler, Activity
           }
         }
         val userAgeRange = userAccount?.ageRange?.value ?: ""
+        val userBirthyear = userAccount?.birthyear ?: ""
         val userBirthday = userAccount?.birthday ?: ""
 
         val context = HashMap<String, String>()
@@ -283,6 +294,7 @@ public class FlutterKakaoLoginPlugin: FlutterPlugin, MethodCallHandler, Activity
         context["userDisplayID"] = userDisplayID
         context["userGender"] = userGender
         context["userAgeRange"] = userAgeRange
+        context["userBirthyear"] = userBirthyear
         context["userBirthday"] = userBirthday
         methodResult.success(context)
       }

@@ -54,10 +54,14 @@ public class SwiftFlutterKakaoLoginPlugin: NSObject, FlutterPlugin {
         break
     case "getUserMe":
         KOSessionTask.userMeTask(withPropertyKeys: [
-            "kakao_account.email",
             "properties.nickname",
             "properties.profile_image",
-            "properties.thumbnail_image"
+            "properties.thumbnail_image",
+            "kakao_account.profile",
+            "kakao_account.email",
+            "kakao_account.age_range",
+            "kakao_account.birthday",
+            "kakao_account.gender"
         ]) { (error, me) in
             if error != nil {
                 let errorMessage = error != nil ? error!.localizedDescription : "Unknown Error"
@@ -127,6 +131,7 @@ public class SwiftFlutterKakaoLoginPlugin: NSObject, FlutterPlugin {
                 @unknown default:
                     break
                 }
+                let userBirthyear = me?.account?.birthyear ?? ""
                 let userBirthday = me?.account?.birthday ?? ""
                 
                 result([
@@ -140,6 +145,7 @@ public class SwiftFlutterKakaoLoginPlugin: NSObject, FlutterPlugin {
                     "userDisplayID" : userDisplayID,
                     "userGender" : userGender,
                     "userAgeRange" : userAgeRange,
+                    "userBirthyear" : userBirthyear,
                     "userBirthday" : userBirthday
                 ])
             }
@@ -148,6 +154,10 @@ public class SwiftFlutterKakaoLoginPlugin: NSObject, FlutterPlugin {
     case "getCurrentAccessToken":
         let accessToken = KOSession.shared()?.token?.accessToken
         result(accessToken)
+        break
+    case "getCurrentRefreshToken":
+        let refreshToken = KOSession.shared()?.token?.refreshToken
+        result(refreshToken)
         break
     case "unlink":
         KOSessionTask.unlinkTask { (success, error) in

@@ -17,6 +17,7 @@ class _MyAppState extends State<MyApp> {
 
   String _loginMessage = 'Current Not Logined :(';
   String _accessToken = '';
+  String _refreshToken = '';
   String _accountInfo = '';
   bool _isLogined = false;
 
@@ -25,7 +26,8 @@ class _MyAppState extends State<MyApp> {
     {"key": "logout", "title": "Logout", "subtitle": ""},
     {"key": "unlink", "title": "Unlink", "subtitle": ""},
     {"key": "account", "title": "Get AccountInfo", "subtitle": ""},
-    {"key": "accessToken", "title": "Get AccessToken", "subtitle": ""}
+    {"key": "accessToken", "title": "Get AccessToken", "subtitle": ""},
+    {"key": "refreshToken", "title": "Get RefreshToken", "subtitle": ""}
   ];
 
   @override
@@ -80,12 +82,22 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<Null> _getAccessToken() async {
-    final KakaoAccessToken accessToken = await (kakaoSignIn.currentAccessToken);
+    final KakaoToken token = await (kakaoSignIn.currentToken);
+    final accessToken = token.accessToken;
     if (accessToken != null) {
-      final token = accessToken.token;
-      _updateAccessToken('AccessToken is \n' + token);
+      _updateAccessToken('AccessToken\n' + accessToken);
     } else {
       _updateAccessToken('');
+    }
+  }
+
+  Future<Null> _getRefreshToken() async {
+    final KakaoToken token = await (kakaoSignIn.currentToken);
+    final refreshToken = token.refreshToken;
+    if (refreshToken != null) {
+      _updateRefreshToken('RefreshToken\n' + refreshToken);
+    } else {
+      _updateRefreshToken('');
     }
   }
 
@@ -101,6 +113,7 @@ class _MyAppState extends State<MyApp> {
     });
     if (!logined) {
       _updateAccessToken('');
+      _updateRefreshToken('');
       _updateAccountMessage('');
     }
   }
@@ -108,6 +121,12 @@ class _MyAppState extends State<MyApp> {
   void _updateAccessToken(String accessToken) {
     setState(() {
       _accessToken = accessToken;
+    });
+  }
+
+  void _updateRefreshToken(String refreshToken) {
+    setState(() {
+      _refreshToken = refreshToken;
     });
   }
 
@@ -151,6 +170,8 @@ class _MyAppState extends State<MyApp> {
           (account.userGender == null) ? 'None' : account.userGender;
       final userAgeRange =
           (account.userAgeRange == null) ? 'None' : account.userAgeRange;
+      final userBirthyear =
+          (account.userBirthyear == null) ? 'None' : account.userBirthyear;
       final userBirthday =
           (account.userBirthday == null) ? 'None' : account.userBirthday;
       final userProfileImagePath = (account.userProfileImagePath == null)
@@ -167,6 +188,7 @@ class _MyAppState extends State<MyApp> {
           '- Nickname is ${userNickname}\n'
           '- Gender is ${userGender}\n'
           '- Age is ${userAgeRange}\n'
+          '- Birthyear is ${userBirthyear}\n'
           '- Birthday is ${userBirthday}\n'
           '- ProfileImagePath is ${userProfileImagePath}\n'
           '- ThumbnailImagePath is ${userThumbnailImagePath}');
@@ -197,148 +219,104 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-        home: new Scaffold(
-            appBar: new AppBar(
-              title: new Text('Kakao Login Plugin app'),
-            ),
-            body: new SafeArea(
-                child: new Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                new Padding(
-                    //padding: const EdgeInsets.only(top: 100.0),
-                    padding: EdgeInsets.all(0.0),
-                    child: IntrinsicHeight(
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Expanded(
-                              child: Column(children: [
-                                new Container(
-                                  height: 45.0,
-                                  decoration: new BoxDecoration(
-                                      color: Colors.white,
-                                      border: new Border(
-                                          bottom: new BorderSide(
-                                              color: Colors.white,
-                                              width: 0.0))),
-                                  child: new Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      new Text("Kakao Login Result",
-                                          style: new TextStyle(
-                                              fontWeight: FontWeight.bold))
-                                    ],
-                                  ),
-                                ),
-                                new Container(
-                                  height: 250.0,
-                                  decoration: new BoxDecoration(
-                                      color: Colors.white,
-                                      border: new Border(
-                                          bottom: new BorderSide(
-                                              color: Colors.grey, width: 1.0))),
-                                  child: new Center(
-                                    child: new Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        new Container(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 8.0,
-                                              right: 8.0),
-                                          child: new Text(
-                                            _loginMessage,
-                                            textAlign: TextAlign.left,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 10,
-                                          ),
-                                        ),
-                                        new Container(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 8.0,
-                                              right: 8.0),
-                                          child: new Text(
-                                            _accountInfo,
-                                            textAlign: TextAlign.left,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 10,
-                                          ),
-                                        ),
-                                        new Container(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 25.0,
-                                              right: 25.0),
-                                          child: new Text(
-                                            _accessToken,
-                                            textAlign: TextAlign.left,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 10,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ]),
-                            ),
-                          ]),
-                    )),
-                new Expanded(
-                  child: new ListView.builder(
-                    itemCount: _litems.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        title: new Text(_litems[index]['title']),
-                        subtitle: new Text(_litems[index]['subtitle']),
-                        onTap: () {
-                          final key = _litems[index]['key'];
-                          switch (key) {
-                            case "login":
-                              if (!_isLogined) {
-                                _login();
-                              }
-                              break;
-                            case "logout":
-                              if (_isLogined) {
-                                _logOut();
-                              }
-                              break;
-                            case "unlink":
-                              if (_isLogined) {
-                                _unlink();
-                              }
-                              break;
-                            case "account":
-                              if (!_isLogined) {
-                                _showAlert(context, 'Login is required.');
-                              } else {
-                                _getAccountInfo();
-                              }
-                              break;
-                            case "accessToken":
-                              if (!_isLogined) {
-                                _showAlert(context, 'Login is required.');
-                              } else {
-                                _getAccessToken();
-                              }
-                              break;
-                          }
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ))));
+      home: new Scaffold(
+        appBar: new AppBar(
+          title: new Text('Kakao Login Plugin app'),
+        ),
+        body: new SafeArea(
+          child: new ListView.builder(
+            itemCount: _litems.length + 1,
+            itemBuilder: (BuildContext context, int index) {
+              if (index == 0) {
+                return KakaoInfo(
+                  loginMessage: _loginMessage,
+                  accessToken: _accessToken,
+                  refreshToken: _refreshToken,
+                  accountInfo: _accountInfo,
+                );
+              }
+              final actionIndex = index - 1;
+              return ListTile(
+                title: new Text(_litems[actionIndex]['title']),
+                subtitle: new Text(_litems[actionIndex]['subtitle']),
+                onTap: () {
+                  final key = _litems[actionIndex]['key'];
+                  switch (key) {
+                    case "login":
+                      if (!_isLogined) {
+                        _login();
+                      }
+                      break;
+                    case "logout":
+                      if (_isLogined) {
+                        _logOut();
+                      }
+                      break;
+                    case "unlink":
+                      if (_isLogined) {
+                        _unlink();
+                      }
+                      break;
+                    case "account":
+                      if (!_isLogined) {
+                        _showAlert(context, 'Login is required.');
+                      } else {
+                        _getAccountInfo();
+                      }
+                      break;
+                    case "accessToken":
+                      if (!_isLogined) {
+                        _showAlert(context, 'Login is required.');
+                      } else {
+                        _getAccessToken();
+                      }
+                      break;
+                    case "refreshToken":
+                      if (!_isLogined) {
+                        _showAlert(context, 'Login is required.');
+                      } else {
+                        _getRefreshToken();
+                      }
+                      break;
+                  }
+                },
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class KakaoInfo extends StatelessWidget {
+  final String loginMessage;
+  final String accessToken;
+  final String refreshToken;
+  final String accountInfo;
+
+  KakaoInfo({
+    this.loginMessage = "",
+    this.accessToken = "",
+    this.refreshToken = "",
+    this.accountInfo = "",
+  });
+
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(18, 25, 18, 25),
+      color: Colors.grey[300],
+      child: Column(
+        children: [
+          Text(loginMessage),
+          accountInfo != "" ? SizedBox(height: 25) : Container(),
+          accountInfo != "" ? Text(accountInfo) : Container(),
+          accessToken != "" ? SizedBox(height: 10) : Container(),
+          accessToken != "" ? Text(accessToken) : Container(),
+          refreshToken != "" ? SizedBox(height: 10) : Container(),
+          refreshToken != "" ? Text(refreshToken) : Container(),
+        ],
+      ),
+    );
   }
 }
