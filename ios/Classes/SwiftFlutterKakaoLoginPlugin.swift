@@ -1,9 +1,10 @@
 import Flutter
 import UIKit
-import KakaoOpenSDK
-import KakaoLink
+import KakaoSDKCommon
+import KakaoSDKAuth
+import KakaoSDKUser
 
-public class SwiftFlutterKakaoLoginPlugin: NSObject, FlutterPlugin {
+public class SwiftFlutterKakaoLoginPlugin: FlutterPluginAppLifeCycleDelegate, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "flutter_kakao_login", binaryMessenger: registrar.messenger())
     let instance = SwiftFlutterKakaoLoginPlugin()
@@ -12,168 +13,24 @@ public class SwiftFlutterKakaoLoginPlugin: NSObject, FlutterPlugin {
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     switch call.method {
+    case "init":
+        KakaoSDKCommon.initSDK(appKey: call.arguments as! String)
+        result(true)
+        break;
     case "logIn":
-        // ensure old session was closed
-        KOSession.shared()?.close()
-        
-        KOSession.shared()?.open(completionHandler: { (error) in
-            let isOpen = KOSession.shared()?.isOpen() ?? false
-            if isOpen {
-                // login success
-                KOSessionTask.userMeTask { (error, me) in
-                    if error != nil {
-                        let errorMessage = error != nil ? error!.localizedDescription : "Unknown Error"
-                        result(FlutterError(code: "LOGIN_ERR", message: errorMessage, details: nil))
-                    } else {
-                        let userID = me?.id ?? ""
-                        let userEmail = me?.account?.email ?? ""
-                        result([
-                            "status" : "loggedIn",
-                            "userID" : userID,
-                            "userEmail" : userEmail
-                        ])
-                    }
-                }
-            } else {
-                let errorMessage = error != nil ? error!.localizedDescription : "Unknown Error"
-                result(FlutterError(code: "OPEN_ERR", message: errorMessage, details: nil))
-            }
-        }, authTypes: [NSNumber(value: KOAuthType.talk.rawValue)])
+        logIn(result: result)
         break
     case "logOut":
-        KOSession.shared()?.logoutAndClose(completionHandler: { (success, error) in
-            if error != nil {
-                let errorMessage = error != nil ? error!.localizedDescription : "Unknown Error"
-                result(FlutterError(code: "LOGOUT_ERR", message: errorMessage, details: nil))
-            } else {
-                result([
-                    "status" : "loggedOut"
-                ])
-            }
-        })
+        logOut(result: result)
         break
     case "getUserMe":
-        KOSessionTask.userMeTask(withPropertyKeys: [
-            "properties.nickname",
-            "properties.profile_image",
-            "properties.thumbnail_image",
-            "kakao_account.profile",
-            "kakao_account.email",
-            "kakao_account.age_range",
-            "kakao_account.birthday",
-            "kakao_account.gender"
-        ]) { (error, me) in
-            if error != nil {
-                let errorMessage = error != nil ? error!.localizedDescription : "Unknown Error"
-                result(FlutterError(code: "USERME_ERR", message: errorMessage, details: nil))
-            } else {
-                let userID = me?.id ?? ""
-                let userEmail = me?.account?.email ?? ""
-                let userNickname = me?.properties?["nickname"] ?? ""
-                let userProfileImagePath = me?.properties?["profile_image"] ?? ""
-                let userThumbnailImagePath = me?.properties?["thumbnail_image"] ?? ""
-                let userPhoneNumber = me?.account?.phoneNumber ?? ""
-                let userDisplayID = me?.account?.displayID ?? ""
-                var userGender = ""
-                let gender = me?.account?.gender ?? KOUserGender.null
-                switch gender {
-                case .null:
-                    userGender = ""
-                    break
-                case .male:
-                    userGender = "MALE"
-                    break
-                case .female:
-                    userGender = "FEMALE"
-                    break
-                @unknown default:
-                    break
-                }
-                var userAgeRange = ""
-                let ageRange = me?.account?.ageRange ?? KOUserAgeRange.null
-                switch ageRange {
-                case .null:
-                    userAgeRange = ""
-                    break
-                case .type0:
-                    userAgeRange = "0세~9세"
-                    break
-                case .type10:
-                    userAgeRange = "10세~14세"
-                    break
-                case .type15:
-                    userAgeRange = "15세~19세"
-                    break
-                case .type20:
-                    userAgeRange = "20세~29세"
-                    break
-                case .type30:
-                    userAgeRange = "30세~39세"
-                    break
-                case .type40:
-                    userAgeRange = "40세~49세"
-                    break
-                case .type50:
-                    userAgeRange = "50세~59세"
-                    break
-                case .type60:
-                    userAgeRange = "60세~69세"
-                    break
-                case .type70:
-                    userAgeRange = "70세~79세"
-                    break
-                case .type80:
-                    userAgeRange = "80세~89세"
-                    break
-                case .type90:
-                    userAgeRange = "90세 이상"
-                    break
-                @unknown default:
-                    break
-                }
-                let userBirthyear = me?.account?.birthyear ?? ""
-                let userBirthday = me?.account?.birthday ?? ""
-                
-                result([
-                    "status" : "loggedIn",
-                    "userID" : userID,
-                    "userNickname" : userNickname,
-                    "userProfileImagePath" : userProfileImagePath,
-                    "userThumbnailImagePath" : userThumbnailImagePath,
-                    "userEmail" : userEmail,
-                    "userPhoneNumber" : userPhoneNumber,
-                    "userDisplayID" : userDisplayID,
-                    "userGender" : userGender,
-                    "userAgeRange" : userAgeRange,
-                    "userBirthyear" : userBirthyear,
-                    "userBirthday" : userBirthday
-                ])
-            }
-        }
+        getUserMe(result: result)
         break
-    case "getCurrentAccessToken":
-        let accessToken = KOSession.shared()?.token?.accessToken
-        result(accessToken)
-        break
-    case "getCurrentRefreshToken":
-        let refreshToken = KOSession.shared()?.token?.refreshToken
-        result(refreshToken)
+    case "getCurrentToken":
+        getCurrentToken(result: result)
         break
     case "unlink":
-        KOSessionTask.unlinkTask { (success, error) in
-            if success {
-                result([
-                    "status" : "unlinked"
-                ])
-            } else {
-                if error != nil {
-                    let errorMessage = error != nil ? error!.localizedDescription : "Unknown Error"
-                    result(FlutterError(code: "UNLINK_ERR", message: errorMessage, details: nil))
-                } else {
-                    result(nil)
-                }
-            }
-        }
+        unlink(result: result)
         break
     case "hashKey":
         result("")
@@ -183,4 +40,195 @@ public class SwiftFlutterKakaoLoginPlugin: NSObject, FlutterPlugin {
         break
     }
   }
+
+  private func logIn( result:  @escaping FlutterResult ) {
+      // 카카오톡 설치 여부 확인
+              if (AuthApi.isKakaoTalkLoginAvailable()) {
+                  AuthApi.shared.loginWithKakaoTalk {(oauthToken, error) in
+                      if let error = error {
+                          print(error)
+                          let errorMessage = error.localizedDescription
+                            
+                          result(FlutterError(code: "LOGIN_ERR", message: errorMessage, details: nil))
+                      }
+                      else {
+                          print("loginWithKakaoTalk() success.")
+                        result(oauthToken?.toJson)
+                      }
+                  }
+              } else {
+                  AuthApi.shared.loginWithKakaoAccount {(oauthToken, error) in
+                      if let error = error {
+                          print(error)
+                          let errorMessage = error.localizedDescription
+                          result(FlutterError(code: "LOGIN_ERR", message: errorMessage, details: nil))
+                      }
+                      else {
+                          print("loginWithKakaoAccount() success.")
+                        result(oauthToken?.toJson)
+                      }
+                  }
+              }
+  }
+  private func logOut( result:  @escaping FlutterResult ) {
+      UserApi.shared.logout {(error) in
+          if let error = error {
+              print(error)
+              let errorMessage = error.localizedDescription
+              result(FlutterError(code: "LOGOUT_ERR", message: errorMessage, details: nil))
+          }
+          else {
+              print("logout() success.")
+              result([
+                  "status" : "loggedOut"
+              ])
+          }
+      }
+  }
+
+
+  private func getUserMe(result:  @escaping  FlutterResult) {
+      UserApi.shared.me() {(user, error) in
+          if let error = error {
+              print(error)
+            let errorMessage = error.localizedDescription
+              result(FlutterError(code: "USERME_ERR", message: errorMessage, details: nil))
+          }
+          else {
+              print("me() success.")
+            let userID = user?.id != nil ? "" : ""
+            let userEmail = user?.kakaoAccount?.email ?? ""
+                  let userNickname = user?.kakaoAccount?.profile?.nickname ?? ""
+            let userProfileImagePath = user?.kakaoAccount?.profile?.profileImageUrl?.absoluteString ?? ""
+            let userThumbnailImagePath = user?.kakaoAccount?.profile?.thumbnailImageUrl?.absoluteString ?? ""
+                  let userPhoneNumber = user?.kakaoAccount?.phoneNumber ?? ""
+                  let userDisplayID = user?.kakaoAccount?.email ?? user?.kakaoAccount?.phoneNumber ?? ""
+                  var userGender = ""
+            let gender = user?.kakaoAccount?.gender
+                  switch gender {
+                  case .Male:
+                      userGender = "MALE"
+                      break
+                  case .Female:
+                      userGender = "FEMALE"
+                      break
+                  case .none:
+                    userGender = ""
+                    break
+                  }
+                  var userAgeRange = ""
+                  let ageRange = user?.kakaoAccount?.ageRange
+                  switch ageRange {
+                  case .Age0_9:
+                      userAgeRange = "0세~9세"
+                      break
+                  case .Age10_14:
+                      userAgeRange = "10세~14세"
+                      break
+                  case .Age15_19:
+                      userAgeRange = "15세~19세"
+                      break
+                  case .Age20_29:
+                      userAgeRange = "20세~29세"
+                      break
+                  case .Age30_39:
+                      userAgeRange = "30세~39세"
+                      break
+                  case .Age40_49:
+                      userAgeRange = "40세~49세"
+                      break
+                  case .Age50_59:
+                      userAgeRange = "50세~59세"
+                      break
+                  case .Age60_69:
+                      userAgeRange = "60세~69세"
+                      break
+                  case .Age70_79:
+                      userAgeRange = "70세~79세"
+                      break
+                  case .Age80_89:
+                      userAgeRange = "80세~89세"
+                      break
+                  case .Age90_Above:
+                      userAgeRange = "90세 이상"
+                      break
+                  case .none:
+                    userAgeRange = ""
+                    break
+                  }
+                  let userBirthyear = user?.kakaoAccount?.birthyear ?? ""
+                  let userBirthday = user?.kakaoAccount?.birthday ?? ""
+
+                  result([
+                      "status" : "loggedIn",
+                      "userID" : userID,
+                      "userNickname" : userNickname,
+                      "userProfileImagePath" : userProfileImagePath,
+                      "userThumbnailImagePath" : userThumbnailImagePath,
+                      "userEmail" : userEmail,
+                      "userPhoneNumber" : userPhoneNumber,
+                      "userDisplayID" : userDisplayID,
+                      "userGender" : userGender,
+                      "userAgeRange" : userAgeRange,
+                      "userBirthyear" : userBirthyear,
+                      "userBirthday" : userBirthday
+                  ])
+          }
+      }
+  }
+
+  private func unlink( result:  @escaping FlutterResult ) {
+      UserApi.shared.unlink {(error) in
+          if let error = error {
+              print(error)
+               let errorMessage = error.localizedDescription
+               result(FlutterError(code: "UNLINK_ERR", message: errorMessage, details: nil))
+          }
+          else {
+              print("unlink() success.")
+              result([
+                  "status" : "unlinked"
+              ])
+          }
+      }
+  }
+    
+    private func getCurrentToken( result :  @escaping  FlutterResult ) {
+        let token = AUTH.tokenManager.getToken()
+        if ( token != nil ) {
+            result(token?.toJson)
+        } else {
+            result(nil);
+        }
+        
+    }
+
+  override public func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+        if (AuthApi.isKakaoTalkLoginUrl(url)) {
+            return AuthController.handleOpenUrl(url: url)
+        }
+        return false
+  }
+}
+
+extension Date {
+    var millisecondsSince1970:Int64 {
+        return Int64((self.timeIntervalSince1970 * 1000.0).rounded())
+    }
+
+    init(milliseconds:Int64) {
+        self = Date(timeIntervalSince1970: TimeInterval(milliseconds) / 1000)
+    }
+}
+
+extension OAuthToken {
+    var toJson:Dictionary<String, Any?> {
+        return [
+         "accessToken" : accessToken,
+         "accessTokenExpiresAt" :expiredAt.millisecondsSince1970,
+         "refreshToken" : refreshToken,
+         "refreshTokenExpiresAt" : refreshTokenExpiredAt.millisecondsSince1970,
+         "scopes" : scopes ?? []
+        ]
+    }
 }

@@ -9,65 +9,61 @@ class FlutterKakaoLogin {
   Future<bool> get isLoggedIn async => await currentToken != null;
 
   /// Init
+  /// 카카오 sdk 사용 전 init 코드를 호출해야 합니다.
   Future<void> init(String appKey) {
     return _channel.invokeMethod('init', appKey);
   }
 
   /// Get Current Token Method
+  /// 현재 저장된 Token 정보를 가져옵니다.
   Future<KakaoToken> get currentToken async {
     final Map<String, dynamic> json =
-        await _channel.invokeMapMethod('getCurrentToken');
+        await _channel.invokeMapMethod<String, dynamic>('getCurrentToken');
     return KakaoToken.fromJson(json);
   }
 
-  /// HashKey Method
+  /// HashKey Method ( android only )
   Future<String> get hashKey async {
     final String hashKey = await _channel.invokeMethod('hashKey');
-    if (hashKey == null) {
-      return null;
-    }
     return hashKey;
   }
 
   // Get UserMe Method
-  Future<dynamic> getUserMe() async {
+  Future<KakaoLoginResult> getUserMe() async {
     try {
-      final result = await _channel.invokeMethod('getUserMe');
-      return _delayedToResult(
-          new KakaoLoginResult._(result.cast<String, dynamic>()));
+      final result =
+          await _channel.invokeMapMethod<String, dynamic>('getUserMe');
+      return _delayedToResult(KakaoLoginResult._(result));
     } on PlatformException catch (e) {
       throw e;
     }
   }
 
   // Login Method
-  Future<dynamic> logIn() async {
+  Future<KakaoToken> logIn() async {
     try {
-      final result = await _channel.invokeMethod('logIn');
-      return _delayedToResult(
-          new KakaoLoginResult._(result.cast<String, dynamic>()));
+      final result = await _channel.invokeMapMethod<String, dynamic>('logIn');
+      return _delayedToResult(KakaoToken.fromJson(result));
     } on PlatformException catch (e) {
       throw e;
     }
   }
 
   // Logout Method
-  Future<dynamic> logOut() async {
+  Future<KakaoLoginResult> logOut() async {
     try {
-      final result = await _channel.invokeMethod('logOut');
-      return _delayedToResult(
-          new KakaoLoginResult._(result.cast<String, dynamic>()));
+      final result = await _channel.invokeMapMethod<String, dynamic>('logOut');
+      return _delayedToResult(KakaoLoginResult._(result));
     } on PlatformException catch (e) {
       throw e;
     }
   }
 
   // Unlink Method
-  Future<dynamic> unlink() async {
+  Future<KakaoLoginResult> unlink() async {
     try {
-      final result = await _channel.invokeMethod('unlink');
-      return _delayedToResult(
-          new KakaoLoginResult._(result.cast<String, dynamic>()));
+      final result = await _channel.invokeMapMethod<String, dynamic>('unlink');
+      return _delayedToResult(KakaoLoginResult._(result));
     } on PlatformException catch (e) {
       throw e;
     }
@@ -75,7 +71,7 @@ class FlutterKakaoLogin {
 
   // Helper Delayed Method
   Future<T> _delayedToResult<T>(T result) {
-    return new Future.delayed(const Duration(milliseconds: 500), () => result);
+    return Future.delayed(const Duration(milliseconds: 500), () => result);
   }
 }
 
@@ -89,7 +85,7 @@ class KakaoLoginResult {
 
   KakaoLoginResult._(Map<String, dynamic> map)
       : status = _parseStatus(map['status']),
-        account = new KakaoAccountResult._(map);
+        account = KakaoAccountResult._(map);
 
   static KakaoLoginStatus _parseStatus(String status) {
     switch (status) {
@@ -101,7 +97,7 @@ class KakaoLoginResult {
         return KakaoLoginStatus.unlinked;
     }
 
-    throw new StateError('Invalid status: $status');
+    throw StateError('Invalid status: $status');
   }
 }
 
@@ -161,6 +157,6 @@ class KakaoToken {
         json['refreshTokenExpiresAt'] != null
             ? DateTime.fromMillisecondsSinceEpoch(json['refreshTokenExpiresAt'])
             : null,
-        json['scopes'] ?? <String>[],
+        List<String>.from(json['scopes'] ?? <String>[]),
       );
 }

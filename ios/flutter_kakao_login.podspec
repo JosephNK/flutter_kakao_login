@@ -14,11 +14,11 @@ Pod::Spec.new do |s|
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-  s.dependency 'KakaoSDKCommon', '~> 1.23.4'
-  s.dependency 'KakaoSDKAuth', '~> 1.23.4'
-  s.dependency 'KakaoSDKUser', '~> 1.23.4'
+  s.dependency 'KakaoSDKCommon', '~> 2.0.1'
+  s.dependency 'KakaoSDKAuth', '~> 2.0.1'
+  s.dependency 'KakaoSDKUser', '~> 2.0.1'
   s.static_framework = true
-  s.platform = :ios, '9.0'  
+  s.platform = :ios, '11.0'
 
   # Flutter.framework does not contain a i386 slice. Only x86_64 simulators are supported.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'VALID_ARCHS[sdk=iphonesimulator*]' => 'x86_64' }

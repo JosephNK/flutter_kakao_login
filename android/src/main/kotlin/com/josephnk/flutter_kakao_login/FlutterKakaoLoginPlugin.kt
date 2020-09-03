@@ -15,6 +15,7 @@ import com.kakao.sdk.auth.LoginClient
 import com.kakao.sdk.auth.TokenManagerProvider
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.KakaoSdk
+import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import com.kakao.sdk.user.model.AgeRange
 import com.kakao.sdk.user.model.Gender
@@ -79,6 +80,7 @@ public class FlutterKakaoLoginPlugin : FlutterPlugin,
                 Log.d(TAG, "[onMethodCall] -> init")
                 if ( applicationContext != null ) {
                     KakaoSdk.init(applicationContext!!,apiKey )
+                    result.success(null)
                 } else {
                     result.error("INIT_ERR", "application context is not exists"," ")
                 }
@@ -96,7 +98,7 @@ public class FlutterKakaoLoginPlugin : FlutterPlugin,
                 accessTokenInfo(result)
             }
             "getCurrentToken" -> {
-                Log.d(TAG, "[onMethodCall] -> Token\" -")
+                Log.d(TAG, "[onMethodCall] -> getCurrentToken")
                 currentToken(result)
             }
             "getUserMe" -> {
@@ -110,7 +112,7 @@ public class FlutterKakaoLoginPlugin : FlutterPlugin,
             "hashKey" -> {
                 Log.d(TAG, "[onMethodCall] -> hashKey")
                 if (activity != null) {
-                    val hashKey = Util.getKeyHash(activity!!)
+                    val hashKey = Utility.getKeyHash(activity!!)
                     methodResult.success(hashKey)
                 } else {
                     methodResult.error("NOT_INIT", "activity is not exists", "")
@@ -164,6 +166,7 @@ public class FlutterKakaoLoginPlugin : FlutterPlugin,
     private fun logIn(result: Result) {
         // 로그인 공통 callback 구성
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+            Log.d(TAG, "로그인 Callback")
             if (error != null) {
                 Log.e(TAG, "로그인 실패", error)
                 result.error("LOGIN_ERR", "로그인 실패", error.localizedMessage)
@@ -174,11 +177,14 @@ public class FlutterKakaoLoginPlugin : FlutterPlugin,
         }
 
         // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
-        if (LoginClient.instance.isKakaoTalkLoginAvailable(activity!!)) {
-            LoginClient.instance.loginWithKakaoTalk(activity!!, callback = callback)
-        } else {
+        Log.d(TAG, "카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인")
+        //if (LoginClient.instance.isKakaoTalkLoginAvailable(activity!!)) {
+        //    Log.d(TAG, "카카오톡으로 로그인")
+        //    LoginClient.instance.loginWithKakaoTalk(activity!!, callback = callback)
+        //} else {
+            Log.d(TAG, "카카오계정으로 로그인")
             LoginClient.instance.loginWithKakaoAccount(activity!!, callback = callback)
-        }
+        //}
     }
 
     // logout
@@ -337,45 +343,18 @@ public class FlutterKakaoLoginPlugin : FlutterPlugin,
 
     private fun AgeRange.value(): String {
         return when (this) {
-            AgeRange.AGE_0_9 -> "0~9"
-            AgeRange.AGE_10_14 -> "10~14"
-            AgeRange.AGE_15_19 -> "15~19"
-            AgeRange.AGE_20_29 -> "20~29"
-            AgeRange.AGE_30_39 -> "30~39"
-            AgeRange.AGE_40_49 -> "40~49"
-            AgeRange.AGE_50_59 -> "50~59"
-            AgeRange.AGE_60_69 -> "60~69"
-            AgeRange.AGE_70_79 -> "70~79"
-            AgeRange.AGE_80_89 -> "80~89"
-            AgeRange.AGE_90_ABOVE -> "90~"
-            AgeRange.UNKNOWN -> "UNKNOWN"
+            AgeRange.AGE_0_9 -> "0세~9세"
+            AgeRange.AGE_10_14 -> "10세~14세"
+            AgeRange.AGE_15_19 -> "15세~19세"
+            AgeRange.AGE_20_29 -> "20세~29세"
+            AgeRange.AGE_30_39 -> "30세~39세"
+            AgeRange.AGE_40_49 -> "40세~49세"
+            AgeRange.AGE_50_59 -> "50세~59세"
+            AgeRange.AGE_60_69 -> "60세~69세"
+            AgeRange.AGE_70_79 -> "70세~79세"
+            AgeRange.AGE_80_89 -> "80세~89세"
+            AgeRange.AGE_90_ABOVE -> "90세~"
+            AgeRange.UNKNOWN -> ""
         }
-    }
-}
-
-// Util
-//
-object Util {
-    @TargetApi(Build.VERSION_CODES.P)
-    fun getKeyHash(context: Context): String {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            val packageInfo = context.packageManager
-                    .getPackageInfo(context.packageName, PackageManager.GET_SIGNING_CERTIFICATES)
-            val signatures = packageInfo.signingInfo.signingCertificateHistory
-            for (signature in signatures) {
-                val md = MessageDigest.getInstance("SHA")
-                md.update(signature.toByteArray())
-                return Base64.encodeToString(md.digest(), Base64.NO_WRAP)
-            }
-            throw IllegalStateException()
-        }
-        val packageInfo = context.packageManager
-                .getPackageInfo(context.packageName, PackageManager.GET_SIGNATURES)
-        for (signature in packageInfo.signatures) {
-            val md = MessageDigest.getInstance("SHA")
-            md.update(signature.toByteArray())
-            return Base64.encodeToString(md.digest(), Base64.NO_WRAP)
-        }
-        throw IllegalStateException()
     }
 }
