@@ -14,7 +14,9 @@ Pod::Spec.new do |s|
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-  s.dependency 'KakaoOpenSDK', '~> 1.23.3'
+  s.dependency 'KakaoSDKCommon', '~> 1.23.4'
+  s.dependency 'KakaoSDKAuth', '~> 1.23.4'
+  s.dependency 'KakaoSDKUser', '~> 1.23.4'
   s.static_framework = true
   s.platform = :ios, '9.0'  
 
