@@ -33,7 +33,7 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 19
     }
     lintOptions {
         disable 'InvalidPackage'
@@ -43,21 +43,6 @@ android {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    // 카카오 로그인 sdk를 사용하기 위해 필요.
-    implementation group: 'com.kakao.sdk', name: 'usermgmt', version: '1.23.0'
+    implementation "com.kakao.sdk:v2-user:2.0.2" // 카카오 로그인, 사용자 관리
 
-    // 카카오링크 sdk를 사용하기 위해 필요.
-    implementation group: 'com.kakao.sdk', name: 'kakaolink', version: '1.23.0'
-
-    // 카카오톡 sdk를 사용하기 위해 필요.
-    implementation group: 'com.kakao.sdk', name: 'kakaotalk', version: '1.23.0'
-
-    // 카카오내비 sdk를 사용하기 위해 필요.
-    implementation group: 'com.kakao.sdk', name: 'kakaonavi', version: '1.23.0'
-
-    // 카카오스토리 sdk를 사용하기 위해 필요.
-    implementation group: 'com.kakao.sdk', name: 'kakaostory', version: '1.23.0'
-
-    // push sdk를 사용하기 위해 필요.
-    implementation group: 'com.kakao.sdk', name: 'push', version: '1.23.0'
 }

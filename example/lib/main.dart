@@ -33,11 +33,13 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
     load();
   }
 
   load() async {
+    // TODO: set your native app key
+    await kakaoSignIn.init("9cf0527ac4a0f756eb992a1041498a5c");
+
     // For Android
     final String hashKey = await (kakaoSignIn.hashKey);
     print("hashKey: $hashKey");

@@ -8,63 +8,62 @@ class FlutterKakaoLogin {
 
   Future<bool> get isLoggedIn async => await currentToken != null;
 
-  // Get Current Token Method
-  Future<KakaoToken> get currentToken async {
-    final String accessToken =
-        await _channel.invokeMethod('getCurrentAccessToken');
-    final String refreshToken =
-        await _channel.invokeMethod('getCurrentRefreshToken');
-    return new KakaoToken(accessToken, refreshToken);
+  /// Init
+  /// 카카오 sdk 사용 전 init 코드를 호출해야 합니다.
+  Future<void> init(String appKey) {
+    return _channel.invokeMethod('init', appKey);
   }
 
-  // HashKey Method
+  /// Get Current Token Method
+  /// 현재 저장된 Token 정보를 가져옵니다.
+  Future<KakaoToken> get currentToken async {
+    final Map<String, dynamic> json =
+        await _channel.invokeMapMethod<String, dynamic>('getCurrentToken');
+    return KakaoToken.fromJson(json);
+  }
+
+  /// HashKey Method ( android only )
   Future<String> get hashKey async {
     final String hashKey = await _channel.invokeMethod('hashKey');
-    if (hashKey == null) {
-      return null;
-    }
     return hashKey;
   }
 
   // Get UserMe Method
-  Future<dynamic> getUserMe() async {
+  Future<KakaoLoginResult> getUserMe() async {
     try {
-      final result = await _channel.invokeMethod('getUserMe');
-      return _delayedToResult(
-          new KakaoLoginResult._(result.cast<String, dynamic>()));
+      final result =
+          await _channel.invokeMapMethod<String, dynamic>('getUserMe');
+      return _delayedToResult(KakaoLoginResult._(result));
     } on PlatformException catch (e) {
       throw e;
     }
   }
 
   // Login Method
-  Future<dynamic> logIn() async {
+  Future<KakaoToken> logIn() async {
     try {
-      final result = await _channel.invokeMethod('logIn');
-      return _delayedToResult(
-          new KakaoLoginResult._(result.cast<String, dynamic>()));
+      final result = await _channel.invokeMapMethod<String, dynamic>('logIn');
+      return _delayedToResult(KakaoToken.fromJson(result));
     } on PlatformException catch (e) {
       throw e;
     }
   }
 
   // Logout Method
-  Future<dynamic> logOut() async {
+  Future<KakaoLoginResult> logOut() async {
     try {
-      final result = await _channel.invokeMethod('logOut');
-      return _delayedToResult(
-          new KakaoLoginResult._(result.cast<String, dynamic>()));
+      final result = await _channel.invokeMapMethod<String, dynamic>('logOut');
+      return _delayedToResult(KakaoLoginResult._(result));
     } on PlatformException catch (e) {
       throw e;
     }
   }
 
   // Unlink Method
-  Future<dynamic> unlink() async {
+  Future<KakaoLoginResult> unlink() async {
     try {
-      final result = await _channel.invokeMethod('unlink');
-      return _delayedToResult(
-          new KakaoLoginResult._(result.cast<String, dynamic>()));
+      final result = await _channel.invokeMapMethod<String, dynamic>('unlink');
+      return _delayedToResult(KakaoLoginResult._(result));
     } on PlatformException catch (e) {
       throw e;
     }
@@ -72,7 +71,7 @@ class FlutterKakaoLogin {
 
   // Helper Delayed Method
   Future<T> _delayedToResult<T>(T result) {
-    return new Future.delayed(const Duration(milliseconds: 500), () => result);
+    return Future.delayed(const Duration(milliseconds: 500), () => result);
   }
 }
 
@@ -86,7 +85,7 @@ class KakaoLoginResult {
 
   KakaoLoginResult._(Map<String, dynamic> map)
       : status = _parseStatus(map['status']),
-        account = new KakaoAccountResult._(map);
+        account = KakaoAccountResult._(map);
 
   static KakaoLoginStatus _parseStatus(String status) {
     switch (status) {
@@ -98,7 +97,7 @@ class KakaoLoginResult {
         return KakaoLoginStatus.unlinked;
     }
 
-    throw new StateError('Invalid status: $status');
+    throw StateError('Invalid status: $status');
   }
 }
 
@@ -130,10 +129,34 @@ class KakaoAccountResult {
         userThumbnailImagePath = map['userThumbnailImagePath'];
 }
 
-// Token Class
+/// 카카오 로그인을 통해 발급 받은 토큰.
 class KakaoToken {
-  String accessToken;
-  String refreshToken;
+  /// API 인증에 사용하는 엑세스 토큰.
+  final String accessToken;
 
-  KakaoToken(this.accessToken, this.refreshToken);
+  /// 엑세스 토큰 만료 시각.
+  final DateTime accessTokenExpiresAt;
+
+  /// 엑세스 토큰을 갱신하는데 사용하는 리프레시 토큰.
+  final String refreshToken;
+
+  /// 리프레시 토큰 만료 시각. Nullable
+  final DateTime refreshTokenExpiresAt;
+
+  /// 이 토큰에 부여된 scope 목록.
+  final List<String> scopes;
+
+  KakaoToken(this.accessToken, this.accessTokenExpiresAt, this.refreshToken,
+      [this.refreshTokenExpiresAt, this.scopes]);
+
+  factory KakaoToken.fromJson(Map<String, dynamic> json) => KakaoToken(
+        json['accessToken'],
+        DateTime.fromMillisecondsSinceEpoch(
+            json['accessTokenExpiresAt'] as int),
+        json['refreshToken'],
+        json['refreshTokenExpiresAt'] != null
+            ? DateTime.fromMillisecondsSinceEpoch(json['refreshTokenExpiresAt'])
+            : null,
+        List<String>.from(json['scopes'] ?? <String>[]),
+      );
 }
