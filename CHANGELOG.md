@@ -1,3 +1,7 @@
+## [2.0.0]
+
+- [updated] apply Kakao API V2 @[amond](https://github.com/amondnet)
+
 ## [1.2.0]
 
 - [added] getRefreshToken
