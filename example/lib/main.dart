@@ -37,8 +37,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   load() async {
-    // TODO: set your native app key
-    await kakaoSignIn.init("9cf0527ac4a0f756eb992a1041498a5c");
+    // Kakao SDK Init (Set NATIVE_APP_KEY)
+    await kakaoSignIn.init("0123456789abcdefghijklmn");
 
     // For Android
     final String hashKey = await (kakaoSignIn.hashKey);
@@ -160,40 +160,30 @@ class _MyAppState extends State<MyApp> {
       _updateAccountMessage('');
     } else {
       final userID = (account.userID == null) ? 'None' : account.userID;
-      final userEmail =
-          (account.userEmail == null) ? 'None' : account.userEmail;
-      final userPhoneNumber =
-          (account.userPhoneNumber == null) ? 'None' : account.userPhoneNumber;
-      final userDisplayID =
-          (account.userDisplayID == null) ? 'None' : account.userDisplayID;
-      final userNickname =
-          (account.userNickname == null) ? 'None' : account.userNickname;
-      final userGender =
-          (account.userGender == null) ? 'None' : account.userGender;
-      final userAgeRange =
-          (account.userAgeRange == null) ? 'None' : account.userAgeRange;
-      final userBirthyear =
-          (account.userBirthyear == null) ? 'None' : account.userBirthyear;
-      final userBirthday =
-          (account.userBirthday == null) ? 'None' : account.userBirthday;
-      final userProfileImagePath = (account.userProfileImagePath == null)
-          ? 'None'
-          : account.userProfileImagePath;
-      final userThumbnailImagePath = (account.userThumbnailImagePath == null)
-          ? 'None'
-          : account.userThumbnailImagePath;
+      final userEmail = (account.userEmail == null) ? 'None' : account.userEmail;
+      final userPhoneNumber = (account.userPhoneNumber == null) ? 'None' : account.userPhoneNumber;
+      final userDisplayID = (account.userDisplayID == null) ? 'None' : account.userDisplayID;
+      final userNickname = (account.userNickname == null) ? 'None' : account.userNickname;
+      final userGender = (account.userGender == null) ? 'None' : account.userGender;
+      final userAgeRange = (account.userAgeRange == null) ? 'None' : account.userAgeRange;
+      final userBirthyear = (account.userBirthyear == null) ? 'None' : account.userBirthyear;
+      final userBirthday = (account.userBirthday == null) ? 'None' : account.userBirthday;
+      final userProfileImagePath =
+          (account.userProfileImagePath == null) ? 'None' : account.userProfileImagePath;
+      final userThumbnailImagePath =
+          (account.userThumbnailImagePath == null) ? 'None' : account.userThumbnailImagePath;
 
-      _updateAccountMessage('- ID is ${userID}\n'
-          '- Email is ${userEmail}\n'
-          '- PhoneNumber is ${userPhoneNumber}\n'
-          '- DisplayID is ${userDisplayID}\n'
-          '- Nickname is ${userNickname}\n'
-          '- Gender is ${userGender}\n'
-          '- Age is ${userAgeRange}\n'
-          '- Birthyear is ${userBirthyear}\n'
-          '- Birthday is ${userBirthday}\n'
-          '- ProfileImagePath is ${userProfileImagePath}\n'
-          '- ThumbnailImagePath is ${userThumbnailImagePath}');
+      _updateAccountMessage('- ID is $userID\n'
+          '- Email is $userEmail\n'
+          '- PhoneNumber is $userPhoneNumber\n'
+          '- DisplayID is $userDisplayID\n'
+          '- Nickname is $userNickname\n'
+          '- Gender is $userGender\n'
+          '- Age is $userAgeRange\n'
+          '- Birthyear is $userBirthyear\n'
+          '- Birthday is $userBirthday\n'
+          '- ProfileImagePath is $userProfileImagePath\n'
+          '- ThumbnailImagePath is $userThumbnailImagePath');
     }
   }
 
@@ -204,8 +194,7 @@ class _MyAppState extends State<MyApp> {
         context: context,
         builder: (BuildContext context) {
           return new AlertDialog(
-            content: new Text(value,
-                style: new TextStyle(fontWeight: FontWeight.bold)),
+            content: new Text(value, style: new TextStyle(fontWeight: FontWeight.bold)),
             actions: <Widget>[
               new FlatButton(
                 child: new Text('OK'),

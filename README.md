@@ -6,19 +6,27 @@
 
 A Flutter plugin for using the native Kakao Login SDKs on Android and iOS.
 
+The source is designed in the Kakao API V2 version. (updated 2021.02.20)
+
 ## KakaoSDK Version using in plugin
 
-- iOS SDK Version 1.23.3
-- Android SDK Version 1.23.0
+- iOS SDK Version 2.0.1
+- Android SDK Version 2.0.2
 
 ## Required
 
-- iOS Required : Deployment Target 9.0 Higher.
+- iOS Required : Deployment Target 11.0 Higher.
 - Android Required : Compile SDK 28 Higher.
 
 ## Example
 
 See [example/lib/main.dart](https://github.com/JosephNK/flutter_kakao_login/blob/master/example/lib/main.dart) for details.
+
+- Kakao SDK Init (Set NATIVE_APP_KEY)
+
+```dart
+await kakaoSignIn.init("0123456789abcdefghijklmn");
+```
 
 - Login Example
 
@@ -141,14 +149,15 @@ See the [setup instructions detail](https://developers.kakao.com/docs/android/ge
         android:name="com.kakao.sdk.AppKey"
         android:value="@string/kakao_app_key" />
     <!-- 4 -->
-    <activity
-        android:name="com.kakao.auth.authorization.authcode.KakaoWebViewActivity"
-        android:launchMode="singleTop"
-        android:windowSoftInputMode="adjustResize">
-
+    <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
         <intent-filter>
-            <action android:name="android.intent.action.MAIN"/>
-            <category android:name="android.intent.category.DEFAULT"/>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <!-- Redirect URI: "kakao{NATIVE_APP_KEY}://oauth“ -->
+            <data android:host="oauth"
+                android:scheme="kakao0123456789abcdefghijklmn" />
         </intent-filter>
     </activity>
     ...

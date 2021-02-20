@@ -19,6 +19,7 @@ import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import com.kakao.sdk.user.model.AgeRange
 import com.kakao.sdk.user.model.Gender
+import com.kakao.sdk.user.model.User
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -79,7 +80,7 @@ public class FlutterKakaoLoginPlugin : FlutterPlugin,
                 val apiKey = call.arguments as String
                 Log.d(TAG, "[onMethodCall] -> init")
                 if ( applicationContext != null ) {
-                    KakaoSdk.init(applicationContext!!,apiKey )
+                    KakaoSdk.init(applicationContext!!, apiKey)
                     result.success(null)
                 } else {
                     result.error("INIT_ERR", "application context is not exists"," ")
@@ -95,15 +96,15 @@ public class FlutterKakaoLoginPlugin : FlutterPlugin,
             }
             "accessTokenInfo" -> {
                 Log.d(TAG, "[onMethodCall] -> accessTokenInfo")
-                accessTokenInfo(result)
+                getAccessTokenInfo(result)
             }
             "getCurrentToken" -> {
                 Log.d(TAG, "[onMethodCall] -> getCurrentToken")
-                currentToken(result)
+                getCurrentTokenInfo(result)
             }
             "getUserMe" -> {
                 Log.d(TAG, "[onMethodCall] -> getUserMe")
-                requestMe(methodResult)
+                getUserMe(methodResult)
             }
             "unlink" -> {
                 Log.d(TAG, "[onMethodCall] -> unlink")
@@ -162,7 +163,7 @@ public class FlutterKakaoLoginPlugin : FlutterPlugin,
         onDetachedFromActivity()
     }
 
-    // log in
+    // Login
     private fun logIn(result: Result) {
         // 로그인 공통 callback 구성
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
@@ -172,25 +173,27 @@ public class FlutterKakaoLoginPlugin : FlutterPlugin,
                 result.error("LOGIN_ERR", "로그인 실패", error.localizedMessage)
             } else if (token != null) {
                 Log.i(TAG, "로그인 성공 ${token.accessToken}")
-                result.success(token.toJson())
+                var resultMap = mapOf(
+                        "status" to "loggedIn",
+                        "token" to token.toJson()
+                )
+                result.success(resultMap)
             }
         }
 
         // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
         Log.d(TAG, "카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인")
-        //if (LoginClient.instance.isKakaoTalkLoginAvailable(activity!!)) {
-        //    Log.d(TAG, "카카오톡으로 로그인")
-        //    LoginClient.instance.loginWithKakaoTalk(activity!!, callback = callback)
-        //} else {
+        if (LoginClient.instance.isKakaoTalkLoginAvailable(activity!!)) {
+            Log.d(TAG, "카카오톡으로 로그인")
+            LoginClient.instance.loginWithKakaoTalk(activity!!, callback = callback)
+        } else {
             Log.d(TAG, "카카오계정으로 로그인")
             LoginClient.instance.loginWithKakaoAccount(activity!!, callback = callback)
-        //}
+        }
     }
 
-    // logout
-    //
+    // Logout
     private fun logout(result: Result) {
-        // 로그아웃
         UserApiClient.instance.logout { error ->
             if (error != null) {
                 Log.e(TAG, "로그아웃 실패. SDK에서 토큰 삭제됨", error)
@@ -198,15 +201,17 @@ public class FlutterKakaoLoginPlugin : FlutterPlugin,
             } else {
                 Log.i(TAG, "로그아웃 성공. SDK에서 토큰 삭제됨")
                 uiThreadHandler.post(Runnable {
-                    val context = HashMap<String, String>()
-                    context["status"] = "loggedOut"
-                    result.success(context)
+                    var resultMap = mapOf(
+                            "status" to "loggedOut"
+                    )
+                    result.success(resultMap)
                 })
             }
         }
     }
 
-    private fun accessTokenInfo(result: Result) {
+    // Get Access Token
+    private fun getAccessTokenInfo(result: Result) {
         // 토큰 정보 보기
         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
             if (error != null) {
@@ -216,21 +221,17 @@ public class FlutterKakaoLoginPlugin : FlutterPlugin,
                 Log.i(TAG, "토큰 정보 보기 성공" +
                         "\n회원번호: ${tokenInfo.id}" +
                         "\n만료시간: ${tokenInfo.expiresIn} 초")
-                result.success(mapOf("id" to tokenInfo.id, "expiresIn" to tokenInfo.expiresIn))
+                var resultMap = mapOf(
+                        "id" to tokenInfo.id,
+                        "expiresIn" to tokenInfo.expiresIn
+                )
+                result.success(resultMap)
             }
         }
     }
 
-    private fun isKakaoTalkLoginAvailable(result: Result) {
-        if (activity != null) {
-            val available = LoginClient.instance.isKakaoTalkLoginAvailable(activity!!)
-            result.success(available)
-        } else {
-            result.error("NOT_INITIALIZED", "activity 가 존재하지 않음", "")
-        }
-    }
-
-    private fun currentToken(result: Result) {
+    // Get Current TokenInfo
+    private fun getCurrentTokenInfo(result: Result) {
         try {
             val token = TokenManagerProvider.instance.manager.getToken()
             if (token != null) {
@@ -243,87 +244,66 @@ public class FlutterKakaoLoginPlugin : FlutterPlugin,
         }
     }
 
-    private fun OAuthToken.toJson(): Map<String, Any?> {
-        return mapOf(
-                "accessToken" to accessToken,
-                "accessTokenExpiresAt" to accessTokenExpiresAt.time,
-                "refreshToken" to refreshToken,
-                "refreshTokenExpiresAt" to refreshTokenExpiresAt?.time,
-                "scopes" to scopes
-        )
-    }
-
-    // requestMe
-    private fun requestMe(result: Result) {
+    // Get User Me
+    private fun getUserMe(result: Result) {
         val methodResult: Result = result
 
-        val keys: List<String> = listOf(
-                "properties.nickname",
-                "properties.profile_image",
-                "properties.thumbnail_image",
-                "kakao_account.profile",
-                "kakao_account.email",
-                "kakao_account.age_range",
-                "kakao_account.birthday",
-                "kakao_account.gender"
-        )
-// 사용자 정보 요청 (기본)
+        // 사용자 정보 요청 (기본)
         UserApiClient.instance.me { user, error ->
             if (error != null) {
                 Log.e(TAG, "사용자 정보 요청 실패", error)
                 methodResult.error("USERME_ERR", error.localizedMessage, "")
-
             } else if (user != null) {
-                Log.i(TAG, "사용자 정보 요청 성공" +
-                        "\n회원번호: ${user.id}" +
-                        "\n이메일: ${user.kakaoAccount?.email}" +
-                        "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
-                        "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
+                // 추가 항목 동의 받기
+                val scopes = mutableListOf<String>()
 
-                val userAccount = user?.kakaoAccount
-                val userID = user?.id
-                val userNickname = userAccount?.profile?.nickname ?: ""
-                val userProfileImagePath = userAccount?.profile?.profileImageUrl ?: ""
-                val userThumbnailImagePath = userAccount?.profile?.thumbnailImageUrl ?: ""
-                val userEmail = userAccount?.email ?: ""
-                val userPhoneNumber = userAccount?.phoneNumber ?: ""
-                val userDisplayID = userAccount?.email ?: userAccount?.phoneNumber ?: ""
-                val userGender = when (userAccount?.gender ?: Gender.UNKNOWN) {
-                    Gender.MALE -> {
-                        "MALE"
+                if (user.kakaoAccount?.emailNeedsAgreement == true) scopes.add("account_email")
+                if (user.kakaoAccount?.birthdayNeedsAgreement == true) scopes.add("birthday")
+                if (user.kakaoAccount?.birthyearNeedsAgreement == true) scopes.add("birthyear")
+                if (user.kakaoAccount?.ciNeedsAgreement == true) scopes.add("account_ci")
+                if (user.kakaoAccount?.legalNameNeedsAgreement == true) scopes.add("legal_name")
+                if (user.kakaoAccount?.legalBirthDateNeedsAgreement == true) scopes.add("legal_birth_date")
+                if (user.kakaoAccount?.legalGenderNeedsAgreement == true) scopes.add("legal_gender")
+
+                if (user.kakaoAccount?.phoneNumberNeedsAgreement == true) scopes.add("phone_number")
+                if (user.kakaoAccount?.profileNeedsAgreement == true) scopes.add("profile")
+                if (user.kakaoAccount?.ageRangeNeedsAgreement == true) scopes.add("age_range")
+
+                if (scopes.size > 0) {
+                    // 필요한 scope으로 토큰갱신을 한다.
+                    LoginClient.instance.loginWithNewScopes(applicationContext!!, scopes) { token, error ->
+                        if (error != null) {
+                            Log.e(TAG, "동의 실패", error)
+                            methodResult.error("USER_AGREE_ERR", error.localizedMessage, "")
+                        } else {
+                            Log.d(TAG, "allowed scopes: ${token!!.scopes}")
+                            // 사용자 정보 재요청
+                            UserApiClient.instance.me { user, error ->
+                                if (error != null) {
+                                    Log.e(TAG, "사용자 정보 요청 실패", error)
+                                    methodResult.error("USERME_ERR", error.localizedMessage, "")
+                                } else if (user != null) {
+                                    var resultMap = mutableMapOf(
+                                            "status" to "loggedIn",
+                                            "account" to  getAccountResult(user)
+                                    )
+                                    methodResult.success(resultMap)
+                                }
+                            }
+                        }
                     }
-                    Gender.FEMALE -> {
-                        "FEMALE"
-                    }
-                    else -> {
-                        "UNKNOWN"
-                    }
+                } else {
+                    var resultMap = mutableMapOf(
+                            "status" to "loggedIn",
+                            "account" to  getAccountResult(user)
+                    )
+                    methodResult.success(resultMap)
                 }
-                val userAgeRange = userAccount?.ageRange?.value() ?: ""
-                val userBirthyear = userAccount?.birthyear ?: ""
-                val userBirthday = userAccount?.birthday ?: ""
-
-                val context = HashMap<String, String>()
-                context["status"] = "loggedIn"
-                context["userID"] = userID.toString()
-                context["userNickname"] = userNickname
-                context["userProfileImagePath"] = userProfileImagePath
-                context["userThumbnailImagePath"] = userThumbnailImagePath
-                context["userEmail"] = userEmail
-                context["userPhoneNumber"] = userPhoneNumber
-                context["userDisplayID"] = userDisplayID
-                context["userGender"] = userGender
-                context["userAgeRange"] = userAgeRange
-                context["userBirthyear"] = userBirthyear
-                context["userBirthday"] = userBirthday
-                methodResult.success(context)
-
             }
         }
     }
 
-    // unlink
-    //
+    // Unlink
     private fun unlink(result: Result) {
         val methodResult: Result = result
         // 연결 끊기
@@ -333,14 +313,15 @@ public class FlutterKakaoLoginPlugin : FlutterPlugin,
                 methodResult.error("UNLINK_ERR", error.localizedMessage, "")
             } else {
                 Log.i(TAG, "연결 끊기 성공. SDK에서 토큰 삭제 됨")
-                val context = HashMap<String, String>()
-                context["status"] = "unlinked"
-                //context["userID"] = userId.toString()
-                methodResult.success(context)
+                var resultMap = mapOf(
+                        "status" to "unlinked"
+                )
+                methodResult.success(resultMap)
             }
         }
     }
 
+    // AgeRange Helper
     private fun AgeRange.value(): String {
         return when (this) {
             AgeRange.AGE_0_9 -> "0세~9세"
@@ -357,4 +338,72 @@ public class FlutterKakaoLoginPlugin : FlutterPlugin,
             AgeRange.UNKNOWN -> ""
         }
     }
+
+    // OAuthToken to Map Helper
+    private fun OAuthToken.toJson(): Map<String, Any?> {
+        return mapOf(
+                "accessToken" to accessToken,
+                "accessTokenExpiresAt" to accessTokenExpiresAt.time,
+                "refreshToken" to refreshToken,
+                "refreshTokenExpiresAt" to refreshTokenExpiresAt?.time,
+                "scopes" to scopes
+        )
+    }
+
+    // Get Account Result
+    private fun getAccountResult(user: User?): Map<String, Any> {
+        val userAccount = user?.kakaoAccount
+        val userID = user?.id
+        val userNickname = userAccount?.profile?.nickname ?: ""
+        val userProfileImagePath = userAccount?.profile?.profileImageUrl ?: ""
+        val userThumbnailImagePath = userAccount?.profile?.thumbnailImageUrl ?: ""
+        val userEmail = userAccount?.email ?: ""
+        val userPhoneNumber = userAccount?.phoneNumber ?: ""
+        val userDisplayID = userAccount?.email ?: userAccount?.phoneNumber ?: ""
+        val userGender = when (userAccount?.gender ?: Gender.UNKNOWN) {
+            Gender.MALE -> {
+                "MALE"
+            }
+            Gender.FEMALE -> {
+                "FEMALE"
+            }
+            else -> {
+                "UNKNOWN"
+            }
+        }
+        val userAgeRange = userAccount?.ageRange?.value() ?: ""
+        val userBirthyear = userAccount?.birthyear ?: ""
+        val userBirthday = userAccount?.birthday ?: ""
+
+//        var token: OAuthToken? = null
+//        try {
+//            token = TokenManagerProvider.instance.manager.getToken()
+//        } catch (e: Throwable) {
+//            Log.e(TAG, "GET_TOKEN_ERROR")
+//        }
+
+        return mapOf(
+                "userID" to userID.toString(),
+                "userNickname" to userNickname,
+                "userProfileImagePath" to userProfileImagePath,
+                "userThumbnailImagePath" to userThumbnailImagePath,
+                "userEmail" to userEmail,
+                "userPhoneNumber" to userPhoneNumber,
+                "userDisplayID" to userDisplayID,
+                "userGender" to userGender,
+                "userAgeRange" to userAgeRange,
+                "userBirthyear" to userBirthyear,
+                "userBirthday" to userBirthday
+        )
+    }
+
+//    private fun isKakaoTalkLoginAvailable(result: Result) {
+//        if (activity != null) {
+//            val available = LoginClient.instance.isKakaoTalkLoginAvailable(activity!!)
+//            result.success(available)
+//        } else {
+//            result.error("NOT_INITIALIZED", "activity 가 존재하지 않음", "")
+//        }
+//    }
+
 }

@@ -1,6 +1,6 @@
 import UIKit
 import Flutter
-import KakaoOpenSDK
+import KakaoSDKAuth
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -12,18 +12,10 @@ import KakaoOpenSDK
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
     
-    override func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-        if KOSession.handleOpen(url) {
-            return true
-        }
-        return false
+  override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+    if (AuthApi.isKakaoTalkLoginUrl(url)) {
+      return AuthController.handleOpenUrl(url: url)
     }
-
-    override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
-        if KOSession.handleOpen(url) {
-            return true
-        }
-        return false
-    }
-
+    return false
+  }
 }

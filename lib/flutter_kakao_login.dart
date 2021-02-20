@@ -1,10 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
 class FlutterKakaoLogin {
-  static const MethodChannel _channel =
-      const MethodChannel('flutter_kakao_login');
+  static const MethodChannel _channel = const MethodChannel('flutter_kakao_login');
 
   Future<bool> get isLoggedIn async => await currentToken != null;
 
@@ -22,70 +22,79 @@ class FlutterKakaoLogin {
     return KakaoToken.fromJson(json);
   }
 
-  /// HashKey Method ( android only )
+  /// HashKey Method (android only)
+  ///
   Future<String> get hashKey async {
     final String hashKey = await _channel.invokeMethod('hashKey');
     return hashKey;
   }
 
-  // Get UserMe Method
+  /// Get UserMe Method
+  ///
   Future<KakaoLoginResult> getUserMe() async {
     try {
-      final result =
-          await _channel.invokeMapMethod<String, dynamic>('getUserMe');
-      return _delayedToResult(KakaoLoginResult._(result));
+      final result = await _channel.invokeMapMethod<String, dynamic>('getUserMe');
+      return _delayedToResult(KakaoLoginResult.fromJson(result));
     } on PlatformException catch (e) {
       throw e;
     }
   }
 
-  // Login Method
-  Future<KakaoToken> logIn() async {
+  /// Login Method
+  ///
+  Future<KakaoLoginResult> logIn() async {
     try {
       final result = await _channel.invokeMapMethod<String, dynamic>('logIn');
-      return _delayedToResult(KakaoToken.fromJson(result));
+      return _delayedToResult(KakaoLoginResult.fromJson(result));
     } on PlatformException catch (e) {
       throw e;
     }
   }
 
-  // Logout Method
+  /// Logout Method
+  ///
   Future<KakaoLoginResult> logOut() async {
     try {
       final result = await _channel.invokeMapMethod<String, dynamic>('logOut');
-      return _delayedToResult(KakaoLoginResult._(result));
+      return _delayedToResult(KakaoLoginResult.fromJson(result));
     } on PlatformException catch (e) {
       throw e;
     }
   }
 
-  // Unlink Method
+  /// Unlink Method
+  ///
   Future<KakaoLoginResult> unlink() async {
     try {
       final result = await _channel.invokeMapMethod<String, dynamic>('unlink');
-      return _delayedToResult(KakaoLoginResult._(result));
+      return _delayedToResult(KakaoLoginResult.fromJson(result));
     } on PlatformException catch (e) {
       throw e;
     }
   }
 
-  // Helper Delayed Method
+  /// Helper Delayed Method
+  ///
   Future<T> _delayedToResult<T>(T result) {
     return Future.delayed(const Duration(milliseconds: 500), () => result);
   }
 }
 
-// Login Result Status
+/// Login Result Status
 enum KakaoLoginStatus { loggedIn, loggedOut, unlinked }
 
-// Login Result Class
+/// Login Result Class
 class KakaoLoginResult {
   final KakaoLoginStatus status;
   final KakaoAccountResult account;
+  final KakaoToken token;
 
-  KakaoLoginResult._(Map<String, dynamic> map)
-      : status = _parseStatus(map['status']),
-        account = KakaoAccountResult._(map);
+  // KakaoLoginResult._(Map<String, dynamic> map)
+  //     : status = _parseStatus(map['status']),
+  //       account = KakaoAccountResult.fromJson(map['account']),
+  //       token = KakaoToken.fromJson(map['token']);
+
+  KakaoLoginResult({this.status, this.account, this.token});
 
   static KakaoLoginStatus _parseStatus(String status) {
     switch (status) {
@@ -96,12 +105,31 @@ class KakaoLoginResult {
       case 'unlinked':
         return KakaoLoginStatus.unlinked;
     }
-
     throw StateError('Invalid status: $status');
+  }
+
+  factory KakaoLoginResult.fromJson(Map<String, dynamic> json) {
+    if (json == null) return null;
+    var status = json['status'];
+    var account = json['account'];
+    var token = json['token'];
+    if (account != null) {
+      var accountEncode = jsonEncode(account);
+      account = jsonDecode(accountEncode);
+    }
+    if (token != null) {
+      var tokenEncode = jsonEncode(token);
+      token = jsonDecode(tokenEncode);
+    }
+    return KakaoLoginResult(
+      status: _parseStatus(status),
+      account: KakaoAccountResult.fromJson(account),
+      token: KakaoToken.fromJson(token),
+    );
   }
 }
 
-// Account Class
+/// Account Class
 class KakaoAccountResult {
   final String userID;
   final String userEmail;
@@ -115,18 +143,49 @@ class KakaoAccountResult {
   final String userProfileImagePath;
   final String userThumbnailImagePath;
 
-  KakaoAccountResult._(Map<String, dynamic> map)
-      : userID = map['userID'],
-        userEmail = map['userEmail'],
-        userPhoneNumber = map['userPhoneNumber'],
-        userDisplayID = map['userDisplayID'],
-        userNickname = map['userNickname'],
-        userGender = map['userGender'],
-        userAgeRange = map['userAgeRange'],
-        userBirthyear = map['userBirthyear'],
-        userBirthday = map['userBirthday'],
-        userProfileImagePath = map['userProfileImagePath'],
-        userThumbnailImagePath = map['userThumbnailImagePath'];
+  // KakaoAccountResult._(Map<String, dynamic> map)
+  //     : userID = map['userID'],
+  //       userEmail = map['userEmail'],
+  //       userPhoneNumber = map['userPhoneNumber'],
+  //       userDisplayID = map['userDisplayID'],
+  //       userNickname = map['userNickname'],
+  //       userGender = map['userGender'],
+  //       userAgeRange = map['userAgeRange'],
+  //       userBirthyear = map['userBirthyear'],
+  //       userBirthday = map['userBirthday'],
+  //       userProfileImagePath = map['userProfileImagePath'],
+  //       userThumbnailImagePath = map['userThumbnailImagePath'];
+
+  KakaoAccountResult({
+    this.userID,
+    this.userEmail,
+    this.userPhoneNumber,
+    this.userDisplayID,
+    this.userNickname,
+    this.userGender,
+    this.userAgeRange,
+    this.userBirthyear,
+    this.userBirthday,
+    this.userProfileImagePath,
+    this.userThumbnailImagePath,
+  });
+
+  factory KakaoAccountResult.fromJson(Map<String, dynamic> json) {
+    if (json == null) return null;
+    return KakaoAccountResult(
+      userID: json['userID'],
+      userEmail: json['userEmail'],
+      userPhoneNumber: json['userPhoneNumber'],
+      userDisplayID: json['userDisplayID'],
+      userNickname: json['userNickname'],
+      userGender: json['userGender'],
+      userAgeRange: json['userAgeRange'],
+      userBirthyear: json['userBirthyear'],
+      userBirthday: json['userBirthday'],
+      userProfileImagePath: json['userProfileImagePath'],
+      userThumbnailImagePath: json['userThumbnailImagePath'],
+    );
+  }
 }
 
 /// 카카오 로그인을 통해 발급 받은 토큰.
@@ -149,14 +208,16 @@ class KakaoToken {
   KakaoToken(this.accessToken, this.accessTokenExpiresAt, this.refreshToken,
       [this.refreshTokenExpiresAt, this.scopes]);
 
-  factory KakaoToken.fromJson(Map<String, dynamic> json) => KakaoToken(
-        json['accessToken'],
-        DateTime.fromMillisecondsSinceEpoch(
-            json['accessTokenExpiresAt'] as int),
-        json['refreshToken'],
-        json['refreshTokenExpiresAt'] != null
-            ? DateTime.fromMillisecondsSinceEpoch(json['refreshTokenExpiresAt'])
-            : null,
-        List<String>.from(json['scopes'] ?? <String>[]),
-      );
+  factory KakaoToken.fromJson(Map<String, dynamic> json) {
+    if (json == null) return null;
+    return KakaoToken(
+      json['accessToken'],
+      DateTime.fromMillisecondsSinceEpoch(json['accessTokenExpiresAt'] as int),
+      json['refreshToken'],
+      json['refreshTokenExpiresAt'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(json['refreshTokenExpiresAt'])
+          : null,
+      List<String>.from(json['scopes'] ?? <String>[]),
+    );
+  }
 }
