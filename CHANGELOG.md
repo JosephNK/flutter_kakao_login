@@ -1,3 +1,7 @@
+## [3.0.0]
+
+- [updated] null safety support.
+
 ## [2.0.0]
 
 - [updated] apply Kakao API V2 @[amond](https://github.com/amondnet)

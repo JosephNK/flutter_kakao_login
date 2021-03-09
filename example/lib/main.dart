@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_kakao_login/flutter_kakao_login.dart';
 
 void main() {
@@ -13,7 +14,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  static final FlutterKakaoLogin kakaoSignIn = new FlutterKakaoLogin();
+  static final FlutterKakaoLogin kakaoSignIn = FlutterKakaoLogin();
 
   String _loginMessage = 'Current Not Logined :(';
   String _accessToken = '';
@@ -21,13 +22,13 @@ class _MyAppState extends State<MyApp> {
   String _accountInfo = '';
   bool _isLogined = false;
 
-  List<Map<String, String>> _litems = [
-    {"key": "login", "title": "Login", "subtitle": ""},
-    {"key": "logout", "title": "Logout", "subtitle": ""},
-    {"key": "unlink", "title": "Unlink", "subtitle": ""},
-    {"key": "account", "title": "Get AccountInfo", "subtitle": ""},
-    {"key": "accessToken", "title": "Get AccessToken", "subtitle": ""},
-    {"key": "refreshToken", "title": "Get RefreshToken", "subtitle": ""}
+  final List<Map<String, String>> _listItems = [
+    {'key': 'login', 'title': 'Login', 'subtitle': ''},
+    {'key': 'logout', 'title': 'Logout', 'subtitle': ''},
+    {'key': 'unlink', 'title': 'Unlink', 'subtitle': ''},
+    {'key': 'account', 'title': 'Get AccountInfo', 'subtitle': ''},
+    {'key': 'accessToken', 'title': 'Get AccessToken', 'subtitle': ''},
+    {'key': 'refreshToken', 'title': 'Get RefreshToken', 'subtitle': ''}
   ];
 
   @override
@@ -36,21 +37,21 @@ class _MyAppState extends State<MyApp> {
     load();
   }
 
-  load() async {
+  void load() async {
     // Kakao SDK Init (Set NATIVE_APP_KEY)
-    await kakaoSignIn.init("0123456789abcdefghijklmn");
+    await kakaoSignIn.init('0123456789abcdefghijklmn');
 
     // For Android
-    final String hashKey = await (kakaoSignIn.hashKey);
-    print("hashKey: $hashKey");
+    final hashKey = await kakaoSignIn.hashKey;
+    print('hashKey: $hashKey');
   }
 
   Future<Null> _login() async {
     try {
       final result = await kakaoSignIn.logIn();
       _processLoginResult(result);
-    } catch (e) {
-      _updateLoginMessage("${e.code} ${e.message}");
+    } on PlatformException catch (e) {
+      _updateLoginMessage('${e.code} ${e.message}');
     }
   }
 
@@ -59,8 +60,8 @@ class _MyAppState extends State<MyApp> {
       final result = await kakaoSignIn.logOut();
       _processLoginResult(result);
       _processAccountResult(null);
-    } catch (e) {
-      _updateLoginMessage("${e.code} ${e.message}");
+    } on PlatformException catch (e) {
+      _updateLoginMessage('${e.code} ${e.message}');
     }
   }
 
@@ -68,24 +69,24 @@ class _MyAppState extends State<MyApp> {
     try {
       final result = await kakaoSignIn.unlink();
       _processLoginResult(result);
-    } catch (e) {
-      _updateLoginMessage("${e.code} ${e.message}");
+    } on PlatformException catch (e) {
+      _updateLoginMessage('${e.code} ${e.message}');
     }
   }
 
   Future<Null> _getAccountInfo() async {
     try {
       final result = await kakaoSignIn.getUserMe();
-      final KakaoAccountResult account = result.account;
+      final account = result.account;
       _processAccountResult(account);
-    } catch (e) {
-      _updateLoginMessage("${e.code} ${e.message}");
+    } on PlatformException catch (e) {
+      _updateLoginMessage('${e.code} ${e.message}');
     }
   }
 
   Future<Null> _getAccessToken() async {
-    final KakaoToken token = await (kakaoSignIn.currentToken);
-    final accessToken = token.accessToken;
+    final token = await kakaoSignIn.currentToken;
+    final accessToken = token?.accessToken;
     if (accessToken != null) {
       _updateAccessToken('AccessToken\n' + accessToken);
     } else {
@@ -94,8 +95,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<Null> _getRefreshToken() async {
-    final KakaoToken token = await (kakaoSignIn.currentToken);
-    final refreshToken = token.refreshToken;
+    final token = await kakaoSignIn.currentToken;
+    final refreshToken = token?.refreshToken;
     if (refreshToken != null) {
       _updateRefreshToken('RefreshToken\n' + refreshToken);
     } else {
@@ -155,7 +156,7 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void _processAccountResult(KakaoAccountResult account) {
+  void _processAccountResult(KakaoAccountResult? account) {
     if (account == null) {
       _updateAccountMessage('');
     } else {
@@ -193,14 +194,14 @@ class _MyAppState extends State<MyApp> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return new AlertDialog(
-            content: new Text(value, style: new TextStyle(fontWeight: FontWeight.bold)),
+          return AlertDialog(
+            content: Text(value, style: TextStyle(fontWeight: FontWeight.bold)),
             actions: <Widget>[
-              new FlatButton(
-                child: new Text('OK'),
+              TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
+                child: Text('OK'),
               )
             ],
           );
@@ -209,14 +210,14 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      home: new Scaffold(
-        appBar: new AppBar(
-          title: new Text('Kakao Login Plugin app'),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Kakao Login Plugin app'),
         ),
-        body: new SafeArea(
-          child: new ListView.builder(
-            itemCount: _litems.length + 1,
+        body: SafeArea(
+          child: ListView.builder(
+            itemCount: _listItems.length + 1,
             itemBuilder: (BuildContext context, int index) {
               if (index == 0) {
                 return KakaoInfo(
@@ -226,43 +227,47 @@ class _MyAppState extends State<MyApp> {
                   accountInfo: _accountInfo,
                 );
               }
+
               final actionIndex = index - 1;
+              final title = _listItems[actionIndex]['title'] ?? '';
+              final subtitle = _listItems[actionIndex]['subtitle'] ?? '';
+              final key = _listItems[actionIndex]['key'];
+
               return ListTile(
-                title: new Text(_litems[actionIndex]['title']),
-                subtitle: new Text(_litems[actionIndex]['subtitle']),
+                title: Text(title),
+                subtitle: Text(subtitle),
                 onTap: () {
-                  final key = _litems[actionIndex]['key'];
                   switch (key) {
-                    case "login":
+                    case 'login':
                       if (!_isLogined) {
                         _login();
                       }
                       break;
-                    case "logout":
+                    case 'logout':
                       if (_isLogined) {
                         _logOut();
                       }
                       break;
-                    case "unlink":
+                    case 'unlink':
                       if (_isLogined) {
                         _unlink();
                       }
                       break;
-                    case "account":
+                    case 'account':
                       if (!_isLogined) {
                         _showAlert(context, 'Login is required.');
                       } else {
                         _getAccountInfo();
                       }
                       break;
-                    case "accessToken":
+                    case 'accessToken':
                       if (!_isLogined) {
                         _showAlert(context, 'Login is required.');
                       } else {
                         _getAccessToken();
                       }
                       break;
-                    case "refreshToken":
+                    case 'refreshToken':
                       if (!_isLogined) {
                         _showAlert(context, 'Login is required.');
                       } else {
@@ -280,6 +285,8 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
+/////////////////////////////////////////////////////////////////////////////
+
 class KakaoInfo extends StatelessWidget {
   final String loginMessage;
   final String accessToken;
@@ -287,12 +294,13 @@ class KakaoInfo extends StatelessWidget {
   final String accountInfo;
 
   KakaoInfo({
-    this.loginMessage = "",
-    this.accessToken = "",
-    this.refreshToken = "",
-    this.accountInfo = "",
+    this.loginMessage = '',
+    this.accessToken = '',
+    this.refreshToken = '',
+    this.accountInfo = '',
   });
 
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(18, 25, 18, 25),
@@ -300,12 +308,12 @@ class KakaoInfo extends StatelessWidget {
       child: Column(
         children: [
           Text(loginMessage),
-          accountInfo != "" ? SizedBox(height: 25) : Container(),
-          accountInfo != "" ? Text(accountInfo) : Container(),
-          accessToken != "" ? SizedBox(height: 10) : Container(),
-          accessToken != "" ? Text(accessToken) : Container(),
-          refreshToken != "" ? SizedBox(height: 10) : Container(),
-          refreshToken != "" ? Text(refreshToken) : Container(),
+          accountInfo != '' ? SizedBox(height: 25) : Container(),
+          accountInfo != '' ? Text(accountInfo) : Container(),
+          accessToken != '' ? SizedBox(height: 10) : Container(),
+          accessToken != '' ? Text(accessToken) : Container(),
+          refreshToken != '' ? SizedBox(height: 10) : Container(),
+          refreshToken != '' ? Text(refreshToken) : Container(),
         ],
       ),
     );

@@ -16,9 +16,9 @@ class FlutterKakaoLogin {
 
   /// Get Current Token Method
   /// 현재 저장된 Token 정보를 가져옵니다.
-  Future<KakaoToken> get currentToken async {
-    final Map<String, dynamic> json =
-        await _channel.invokeMapMethod<String, dynamic>('getCurrentToken');
+  Future<KakaoToken?> get currentToken async {
+    final json = await _channel.invokeMapMethod<String, dynamic>('getCurrentToken');
+    if (json == null) return null;
     return KakaoToken.fromJson(json);
   }
 
@@ -86,15 +86,15 @@ enum KakaoLoginStatus { loggedIn, loggedOut, unlinked }
 /// Login Result Class
 class KakaoLoginResult {
   final KakaoLoginStatus status;
-  final KakaoAccountResult account;
-  final KakaoToken token;
+  final KakaoAccountResult? account;
+  final KakaoToken? token;
 
   // KakaoLoginResult._(Map<String, dynamic> map)
   //     : status = _parseStatus(map['status']),
   //       account = KakaoAccountResult.fromJson(map['account']),
   //       token = KakaoToken.fromJson(map['token']);
 
-  KakaoLoginResult({this.status, this.account, this.token});
+  KakaoLoginResult({required this.status, this.account, this.token});
 
   static KakaoLoginStatus _parseStatus(String status) {
     switch (status) {
@@ -108,11 +108,10 @@ class KakaoLoginResult {
     throw StateError('Invalid status: $status');
   }
 
-  factory KakaoLoginResult.fromJson(Map<String, dynamic> json) {
-    if (json == null) return null;
-    var status = json['status'];
-    var account = json['account'];
-    var token = json['token'];
+  factory KakaoLoginResult.fromJson(Map<String, dynamic>? json) {
+    var status = json?['status'];
+    var account = json?['account'];
+    var token = json?['token'];
     if (account != null) {
       var accountEncode = jsonEncode(account);
       account = jsonDecode(accountEncode);
@@ -131,30 +130,17 @@ class KakaoLoginResult {
 
 /// Account Class
 class KakaoAccountResult {
-  final String userID;
-  final String userEmail;
-  final String userPhoneNumber;
-  final String userDisplayID;
-  final String userNickname;
-  final String userGender;
-  final String userAgeRange;
-  final String userBirthyear;
-  final String userBirthday;
-  final String userProfileImagePath;
-  final String userThumbnailImagePath;
-
-  // KakaoAccountResult._(Map<String, dynamic> map)
-  //     : userID = map['userID'],
-  //       userEmail = map['userEmail'],
-  //       userPhoneNumber = map['userPhoneNumber'],
-  //       userDisplayID = map['userDisplayID'],
-  //       userNickname = map['userNickname'],
-  //       userGender = map['userGender'],
-  //       userAgeRange = map['userAgeRange'],
-  //       userBirthyear = map['userBirthyear'],
-  //       userBirthday = map['userBirthday'],
-  //       userProfileImagePath = map['userProfileImagePath'],
-  //       userThumbnailImagePath = map['userThumbnailImagePath'];
+  final String? userID;
+  final String? userEmail;
+  final String? userPhoneNumber;
+  final String? userDisplayID;
+  final String? userNickname;
+  final String? userGender;
+  final String? userAgeRange;
+  final String? userBirthyear;
+  final String? userBirthday;
+  final String? userProfileImagePath;
+  final String? userThumbnailImagePath;
 
   KakaoAccountResult({
     this.userID,
@@ -170,20 +156,19 @@ class KakaoAccountResult {
     this.userThumbnailImagePath,
   });
 
-  factory KakaoAccountResult.fromJson(Map<String, dynamic> json) {
-    if (json == null) return null;
+  factory KakaoAccountResult.fromJson(Map<String, dynamic>? json) {
     return KakaoAccountResult(
-      userID: json['userID'],
-      userEmail: json['userEmail'],
-      userPhoneNumber: json['userPhoneNumber'],
-      userDisplayID: json['userDisplayID'],
-      userNickname: json['userNickname'],
-      userGender: json['userGender'],
-      userAgeRange: json['userAgeRange'],
-      userBirthyear: json['userBirthyear'],
-      userBirthday: json['userBirthday'],
-      userProfileImagePath: json['userProfileImagePath'],
-      userThumbnailImagePath: json['userThumbnailImagePath'],
+      userID: json?['userID'],
+      userEmail: json?['userEmail'],
+      userPhoneNumber: json?['userPhoneNumber'],
+      userDisplayID: json?['userDisplayID'],
+      userNickname: json?['userNickname'],
+      userGender: json?['userGender'],
+      userAgeRange: json?['userAgeRange'],
+      userBirthyear: json?['userBirthyear'],
+      userBirthday: json?['userBirthday'],
+      userProfileImagePath: json?['userProfileImagePath'],
+      userThumbnailImagePath: json?['userThumbnailImagePath'],
     );
   }
 }
@@ -191,33 +176,32 @@ class KakaoAccountResult {
 /// 카카오 로그인을 통해 발급 받은 토큰.
 class KakaoToken {
   /// API 인증에 사용하는 엑세스 토큰.
-  final String accessToken;
+  final String? accessToken;
 
   /// 엑세스 토큰 만료 시각.
-  final DateTime accessTokenExpiresAt;
+  final DateTime? accessTokenExpiresAt;
 
   /// 엑세스 토큰을 갱신하는데 사용하는 리프레시 토큰.
-  final String refreshToken;
+  final String? refreshToken;
 
   /// 리프레시 토큰 만료 시각. Nullable
-  final DateTime refreshTokenExpiresAt;
+  final DateTime? refreshTokenExpiresAt;
 
   /// 이 토큰에 부여된 scope 목록.
-  final List<String> scopes;
+  final List<String>? scopes;
 
   KakaoToken(this.accessToken, this.accessTokenExpiresAt, this.refreshToken,
       [this.refreshTokenExpiresAt, this.scopes]);
 
-  factory KakaoToken.fromJson(Map<String, dynamic> json) {
-    if (json == null) return null;
+  factory KakaoToken.fromJson(Map<String, dynamic>? json) {
     return KakaoToken(
-      json['accessToken'],
-      DateTime.fromMillisecondsSinceEpoch(json['accessTokenExpiresAt'] as int),
-      json['refreshToken'],
-      json['refreshTokenExpiresAt'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(json['refreshTokenExpiresAt'])
-          : null,
-      List<String>.from(json['scopes'] ?? <String>[]),
+      json?['accessToken'] ?? '',
+      json?['accessTokenExpiresAt'] ??
+          DateTime.fromMillisecondsSinceEpoch(json!['accessTokenExpiresAt']),
+      json?['refreshToken'] ?? '',
+      json?['refreshTokenExpiresAt'] ??
+          DateTime.fromMillisecondsSinceEpoch(json!['refreshTokenExpiresAt']),
+      List<String>.from(json?['scopes'] ?? <String>[]),
     );
   }
 }
