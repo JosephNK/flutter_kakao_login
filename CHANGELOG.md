@@ -1,3 +1,7 @@
+## [3.1.0]
+
+- [fixed] KakaoToken DateTime error.
+
 ## [3.0.0]
 
 - [updated] null safety support.

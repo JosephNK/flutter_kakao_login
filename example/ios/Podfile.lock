@@ -1,10 +1,5 @@
 PODS:
   - Alamofire (5.4.1)
-  - BSGridCollectionViewLayout (1.2.5)
-  - BSImagePicker (2.10.3):
-    - BSGridCollectionViewLayout (= 1.2.5)
-    - BSImageView (= 1.0.3)
-  - BSImageView (1.0.3)
   - Flutter (1.0.0)
   - flutter_kakao_login (1.0.0):
     - Flutter
@@ -18,21 +13,14 @@ PODS:
   - KakaoSDKUser (2.0.5):
     - KakaoSDKAuth (= 2.0.5)
     - KakaoSDKCommon (= 2.0.5)
-  - multi_image_picker (4.7.10):
-    - BSImagePicker (~> 2.10.3)
-    - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_kakao_login (from `.symlinks/plugins/flutter_kakao_login/ios`)
-  - multi_image_picker (from `.symlinks/plugins/multi_image_picker/ios`)
 
 SPEC REPOS:
   trunk:
     - Alamofire
-    - BSGridCollectionViewLayout
-    - BSImagePicker
-    - BSImageView
     - KakaoSDKAuth
     - KakaoSDKCommon
     - KakaoSDKUser
@@ -42,20 +30,14 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_kakao_login:
     :path: ".symlinks/plugins/flutter_kakao_login/ios"
-  multi_image_picker:
-    :path: ".symlinks/plugins/multi_image_picker/ios"
 
 SPEC CHECKSUMS:
   Alamofire: 2291f7d21ca607c491dd17642e5d40fdcda0e65c
-  BSGridCollectionViewLayout: 333dcb457a5a3bdd9212607ab5756553dcfe06cb
-  BSImagePicker: 07404254f2fcdaf5a2eb403c0f8c337267ce8738
-  BSImageView: a149459433a2687157d034c78e059d30ac7f2544
-  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_kakao_login: 7202b6e94a37e8fbd682c32ff03227a9eabe80be
   KakaoSDKAuth: 6903dbdaae617a9918030dba0cc47a2f42ca9731
   KakaoSDKCommon: 0fbcc0fa12d7f1e5fa4d423cd336e877764e1403
   KakaoSDKUser: 55cfcdfb0e4fa04709487936802c09c013bdd782
-  multi_image_picker: 5b7a578db2e02d12f30098afdff6983f4d69fbe0
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 

@@ -35,7 +35,7 @@ try {
     final FlutterKakaoLogin kakaoSignIn = new FlutterKakaoLogin();
     final result = await kakaoSignIn.logIn();
     // To-do Someting ...
-} catch (e) {
+} on PlatformException catch (e) {
     print("${e.code} ${e.message}");
 }
 ```
@@ -47,7 +47,7 @@ try {
     final FlutterKakaoLogin kakaoSignIn = new FlutterKakaoLogin();
     final result = await kakaoSignIn.logOut();
     // To-do Someting ...
-} catch (e) {
+} on PlatformException catch (e) {
     print("${e.code} ${e.message}");
 }
 ```
@@ -59,7 +59,7 @@ try {
     final FlutterKakaoLogin kakaoSignIn = new FlutterKakaoLogin();
     final result = await kakaoSignIn.unlink();
     // To-do Someting ..
-} catch (e) {
+} on PlatformException catch (e) {
     print("${e.code} ${e.message}");
 }
 ```
@@ -107,7 +107,7 @@ try {
         final userThumbnailImagePath = account.userThumbnailImagePath;
         // To-do Someting ...
     }
-} catch (e) {
+} on PlatformException catch (e) {
     print("${e.code} ${e.message}");
 }
 ```

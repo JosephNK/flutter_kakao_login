@@ -196,11 +196,9 @@ class KakaoToken {
   factory KakaoToken.fromJson(Map<String, dynamic>? json) {
     return KakaoToken(
       json?['accessToken'] ?? '',
-      json?['accessTokenExpiresAt'] ??
-          DateTime.fromMillisecondsSinceEpoch(json!['accessTokenExpiresAt']),
+      DateTime.fromMillisecondsSinceEpoch(json?['accessTokenExpiresAt'] ?? 0),
       json?['refreshToken'] ?? '',
-      json?['refreshTokenExpiresAt'] ??
-          DateTime.fromMillisecondsSinceEpoch(json!['refreshTokenExpiresAt']),
+      DateTime.fromMillisecondsSinceEpoch(json?['refreshTokenExpiresAt'] ?? 0),
       List<String>.from(json?['scopes'] ?? <String>[]),
     );
   }
