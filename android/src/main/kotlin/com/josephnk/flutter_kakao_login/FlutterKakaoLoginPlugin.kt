@@ -11,7 +11,6 @@ import android.os.Looper
 import android.util.Base64
 import android.util.Log
 import androidx.annotation.NonNull
-import com.kakao.sdk.auth.LoginClient
 import com.kakao.sdk.auth.TokenManagerProvider
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.KakaoSdk
@@ -183,12 +182,12 @@ public class FlutterKakaoLoginPlugin : FlutterPlugin,
 
         // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
         Log.d(TAG, "카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인")
-        if (LoginClient.instance.isKakaoTalkLoginAvailable(activity!!)) {
+        if (UserApiClient.instance.isKakaoTalkLoginAvailable(activity!!)) {
             Log.d(TAG, "카카오톡으로 로그인")
-            LoginClient.instance.loginWithKakaoTalk(activity!!, callback = callback)
+            UserApiClient.instance.loginWithKakaoTalk(activity!!, callback = callback)
         } else {
             Log.d(TAG, "카카오계정으로 로그인")
-            LoginClient.instance.loginWithKakaoAccount(activity!!, callback = callback)
+            UserApiClient.instance.loginWithKakaoAccount(activity!!, callback = callback)
         }
     }
 
@@ -271,7 +270,7 @@ public class FlutterKakaoLoginPlugin : FlutterPlugin,
 
                 if (scopes.size > 0) {
                     // 필요한 scope으로 토큰갱신을 한다.
-                    LoginClient.instance.loginWithNewScopes(applicationContext!!, scopes) { token, error ->
+                    UserApiClient.instance.loginWithNewScopes(applicationContext!!, scopes) { token, error ->
                         if (error != null) {
                             Log.e(TAG, "동의 실패", error)
                             methodResult.error("USER_AGREE_ERR", error.localizedMessage, "")
