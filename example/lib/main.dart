@@ -161,18 +161,28 @@ class _MyAppState extends State<MyApp> {
       _updateAccountMessage('');
     } else {
       final userID = (account.userID == null) ? 'None' : account.userID;
-      final userEmail = (account.userEmail == null) ? 'None' : account.userEmail;
-      final userPhoneNumber = (account.userPhoneNumber == null) ? 'None' : account.userPhoneNumber;
-      final userDisplayID = (account.userDisplayID == null) ? 'None' : account.userDisplayID;
-      final userNickname = (account.userNickname == null) ? 'None' : account.userNickname;
-      final userGender = (account.userGender == null) ? 'None' : account.userGender;
-      final userAgeRange = (account.userAgeRange == null) ? 'None' : account.userAgeRange;
-      final userBirthyear = (account.userBirthyear == null) ? 'None' : account.userBirthyear;
-      final userBirthday = (account.userBirthday == null) ? 'None' : account.userBirthday;
-      final userProfileImagePath =
-          (account.userProfileImagePath == null) ? 'None' : account.userProfileImagePath;
-      final userThumbnailImagePath =
-          (account.userThumbnailImagePath == null) ? 'None' : account.userThumbnailImagePath;
+      final userEmail =
+          (account.userEmail == null) ? 'None' : account.userEmail;
+      final userPhoneNumber =
+          (account.userPhoneNumber == null) ? 'None' : account.userPhoneNumber;
+      final userDisplayID =
+          (account.userDisplayID == null) ? 'None' : account.userDisplayID;
+      final userNickname =
+          (account.userNickname == null) ? 'None' : account.userNickname;
+      final userGender =
+          (account.userGender == null) ? 'None' : account.userGender;
+      final userAgeRange =
+          (account.userAgeRange == null) ? 'None' : account.userAgeRange;
+      final userBirthyear =
+          (account.userBirthyear == null) ? 'None' : account.userBirthyear;
+      final userBirthday =
+          (account.userBirthday == null) ? 'None' : account.userBirthday;
+      final userProfileImagePath = (account.userProfileImagePath == null)
+          ? 'None'
+          : account.userProfileImagePath;
+      final userThumbnailImagePath = (account.userThumbnailImagePath == null)
+          ? 'None'
+          : account.userThumbnailImagePath;
 
       _updateAccountMessage('- ID is $userID\n'
           '- Email is $userEmail\n'
