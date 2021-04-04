@@ -1,3 +1,7 @@
+## [3.2.0]
+
+- [update] kakao sdk for Android 2.4.2
+
 ## [3.1.0]
 
 - [fixed] KakaoToken DateTime error.
