@@ -85,11 +85,10 @@ buildTypes {
 #### Setup :: AndroidManifest.xml
 
 ```xml
-<!-- 1 -->
+<!-- 1. Setup Require -->
 <uses-permission android:name="android.permission.INTERNET" />
 
 <application>
-    <!-- 2 -->
     <activity
         ...
         android:name=".SampleLoginActivity">
@@ -98,11 +97,8 @@ buildTypes {
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
-    <!-- 3 -->
-    <meta-data
-        android:name="com.kakao.sdk.AppKey"
-        android:value="@string/kakao_app_key" />
-    <!-- 4 -->
+
+    <!-- 2. Setup Kakao -->
     <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
         <intent-filter>
             <action android:name="android.intent.action.VIEW" />
