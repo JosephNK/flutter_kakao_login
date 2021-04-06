@@ -1,3 +1,7 @@
+## [3.2.1]
+
+- [update] example AndroidManifest.xml
+
 ## [3.2.0]
 
 - [update] kakao sdk for Android 2.4.2
