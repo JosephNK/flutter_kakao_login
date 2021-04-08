@@ -49,7 +49,7 @@ Set to gradle 5.6.4 or higher
 distributionUrl=https\://services.gradle.org/distributions/gradle-5.6.4-all.zip
 ```
 
-#### Apply :: proguard-kakao.pro
+#### Setup :: proguard-kakao.pro
 
 First, create proguard-kakao.pro file.
 
@@ -63,7 +63,7 @@ First, create proguard-kakao.pro file.
 
 Second, You need to apply ProGuard to your project.
 
-File Location: android/app/build.gradle
+- File Location: android/app/build.gradle
 
 ```
 buildTypes {
