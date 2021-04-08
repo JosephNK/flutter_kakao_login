@@ -74,14 +74,6 @@ buildTypes {
 }
 ```
 
-#### Setup :: kakao_strings.xml
-
-```xml
-<resources>
-    <string name="kakao_app_key">0123456789abcdefghijklmn</string>
-</resources>
-```
-
 #### Setup :: AndroidManifest.xml
 
 ```xml
