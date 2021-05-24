@@ -47,8 +47,8 @@ public class SwiftFlutterKakaoLoginPlugin: NSObject, FlutterPlugin {
 
     // Login
     private func logIn(result: @escaping FlutterResult) {
-        if (AuthApi.isKakaoTalkLoginAvailable()) {
-            AuthApi.shared.loginWithKakaoTalk {(oauthToken, error) in
+        if (UserApi.isKakaoTalkLoginAvailable()) {
+            UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
                 if let error = error {
                     print(error)
                     let errorMessage = error.localizedDescription
@@ -65,7 +65,7 @@ public class SwiftFlutterKakaoLoginPlugin: NSObject, FlutterPlugin {
                 }
             }
         } else {
-            AuthApi.shared.loginWithKakaoAccount {(oauthToken, error) in
+            UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
                 if let error = error {
                     print(error)
                     let errorMessage = error.localizedDescription
@@ -112,7 +112,7 @@ public class SwiftFlutterKakaoLoginPlugin: NSObject, FlutterPlugin {
                 print("accessTokenInfo() success.")
                 if let _accessTokenInfo = accessTokenInfo {
                     let resultMap: Dictionary<String, Any> = [
-                        "id" : _accessTokenInfo.id,
+                        "id" : _accessTokenInfo.id ?? 0,
                         "expiresIn" : _accessTokenInfo.expiresIn
                     ]
                     result(resultMap)
@@ -158,7 +158,7 @@ public class SwiftFlutterKakaoLoginPlugin: NSObject, FlutterPlugin {
 
                     if scopes.count > 0 {
                         // 필요한 scope으로 토큰갱신을 한다.
-                        AuthApi.shared.loginWithKakaoAccount(scopes: scopes) { (_, error) in
+                        UserApi.shared.loginWithKakaoAccount(scopes: scopes) { (_, error) in
                             if let error = error {
                                 print(error)
                                 let errorMessage = error.localizedDescription
