@@ -10,7 +10,7 @@ The source is designed in the Kakao API V2 version. (start updated 2021.02.20)
 
 ## KakaoSDK Version using in plugin
 
-- iOS SDK Version 2.0.1
+- iOS SDK Version 2.5.2
 - Android SDK Version 2.4.2
 
 ## Required

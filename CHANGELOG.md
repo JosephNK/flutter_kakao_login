@@ -1,3 +1,7 @@
+## [3.3.0]
+
+- [update] kakao sdk for iOS 2.5.2
+
 ## [3.2.1]
 
 - [update] example AndroidManifest.xml
