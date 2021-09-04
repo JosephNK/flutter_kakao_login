@@ -1,3 +1,9 @@
+## [3.4.0]
+
+- [update] kakao sdk for iOS 2.7.0
+- [update] kakao sdk for Android 2.7.0
+- [update] android min sdk 21
+
 ## [3.3.0]
 
 - [update] kakao sdk for iOS 2.5.2

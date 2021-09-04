@@ -10,13 +10,16 @@ The source is designed in the Kakao API V2 version. (start updated 2021.02.20)
 
 ## KakaoSDK Version using in plugin
 
-- iOS SDK Version 2.5.2
-- Android SDK Version 2.4.2
+- iOS SDK Version 2.7.0
+- Android SDK Version 2.7.0
 
 ## Required
 
-- iOS Required : Deployment Target 11.0 Higher.
-- Android Required : Compile SDK 28 Higher.
+- iOS Required
+  - Deployment Target 11.0 Higher.
+- Android Required 
+  - Compile SDK 28 Higher.
+  - Min SDK 21 Higher.
 
 ## Installation
 
