@@ -1,3 +1,7 @@
+## [3.4.1]
+
+- [update] README
+
 ## [3.4.0]
 
 - [update] kakao sdk for iOS 2.7.0

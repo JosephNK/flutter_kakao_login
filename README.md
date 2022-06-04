@@ -4,6 +4,13 @@
 
 [![pub](https://img.shields.io/pub/v/flutter_kakao_login.svg?style=flat)](https://pub.dev/packages/flutter_kakao_login)
 
+
+## Deprecation Notice 
+
+This plugin will no longer be updated as the full version of the `Kakao SDK for Flutter` is released. No further updates to this plugin are planned and we recommend that all users migrate to the [https://pub.dev/packages/kakao_flutter_sdk](https://pub.dev/packages/kakao_flutter_sdk) version.
+
+- - -
+
 A Flutter plugin for using the native Kakao Login SDKs on Android and iOS.
 
 The source is designed in the Kakao API V2 version. (start updated 2021.02.20)
